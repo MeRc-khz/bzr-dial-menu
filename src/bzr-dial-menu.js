@@ -1,5 +1,5 @@
 /**
- * lz-dial.js
+ * bzr-dial-menu.js
  * A native web component implementing a physics-based radial dial menu.
  * 
  * Features:
@@ -9,7 +9,7 @@
  * - Shadow DOM encapsulation
  */
 
-class LawnCzarDial extends HTMLElement {
+class BzrDialMenu extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
@@ -256,7 +256,7 @@ class LawnCzarDial extends HTMLElement {
                 top: 0; left: 0;
             }
 
-            ::slotted(lz-item) {
+            ::slotted(bzr-item) {
                 position: absolute;
                 width: 60px; height: 60px;
                 margin-left: -30px; margin-top: -30px;
@@ -274,7 +274,7 @@ class LawnCzarDial extends HTMLElement {
                 /* No transition during drag - instant response */
             }
             
-            ::slotted(lz-item[active]) {
+            ::slotted(bzr-item[active]) {
                 transform: scale(1.2);
                 color: var(--primary);
                 text-shadow: 0 0 10px var(--primary);
@@ -615,6 +615,7 @@ class LawnCzarDial extends HTMLElement {
             const hitIcon = path.find(el => el.tagName === 'BZR-ITEM');
             this.iconDragState = hitIcon ? { active: true, startY: y, locked: false } : null;
             this.clickedIcon = hitIcon;
+
             this.hasMoved = false;
             this.startPos = { x, y };
 
@@ -701,17 +702,12 @@ class LawnCzarDial extends HTMLElement {
                     dragState.locked = true;
                     this.isDragging = false; // Stop physics drag
 
-                    // Direction: Down (+) -> Prev (Increments rotation), Up (-) -> Next (Decrements rotation)
-                    // Standard: dy > 0 ? 1 : -1
-                    // Right Justified: Up should simulate Clockwise (Next/Prev depending on logic).
-                    // User said: "up now should rotate clockwise".
-                    // Clockwise adds to rotation (Angle increases). so direction = 1.
-                    // So Up (dy < 0) -> direction = 1.
-                    // Down (dy > 0) -> direction = -1.
-
                     let direction = dy > 0 ? 1 : -1;
 
-                    if (this.getAttribute('justify') === 'right') {
+                    // Default position is right (justify is null/undefined).
+                    // Only left-justified dials should NOT invert.
+                    const isRight = this.getAttribute('justify') !== 'left';
+                    if (isRight) {
                         direction = dy > 0 ? -1 : 1;
                     }
 
@@ -735,10 +731,16 @@ class LawnCzarDial extends HTMLElement {
             if (delta > Math.PI) delta -= Math.PI * 2;
             if (delta < -Math.PI) delta += Math.PI * 2;
 
-            // Fix Global Drag Mirroring for Right Docking
-            if (this.getAttribute('justify') === 'right') {
-                delta = -delta;
-            }
+            // In standard radial math (atan2), positive delta is Clockwise.
+            // When Right Justified, we WANT standard behavior because dragging "Down" on the left side (where icons are) 
+            // naturally produces a positive delta (CW) relative to the center on the right.
+            // However, the user reports dragging "Down" moves the dial "Clockwise" which they say is wrong.
+            // They want "Down" -> "Counter-Clockwise".
+            // So we NEED to invert it if it is behaving Clockwise.
+
+            // Free-spin uses atan2 relative to FAB center, which already produces
+            // the correct direction for right-side dials (dragging down = negative delta = CCW).
+            // No inversion needed here — only the icon-lock snap path needs it.
 
             this.rotation += delta;
             this.velocity = delta; // Simple velocity tracking
@@ -844,14 +846,11 @@ class LawnCzarDial extends HTMLElement {
         // Center Angle: PI (180) for Right justify, 0 for Left
         const centerAngle = isRight ? Math.PI : 0;
 
-        // Center the SPAN of items around the center angle
-        // totalSpan = (count - 1) * snapAngle
-        // startAngle = center - (totalSpan / 2)
-        const totalSpan = (count - 1) * this.snapAngle;
-        const startAngle = centerAngle - (totalSpan / 2);
-
+        // Place item 0 at the perpendicular (centerAngle).
+        // Subsequent items fan out by snapAngle increments.
+        // This ensures one icon ALWAYS lands at the perpendicular position.
         this.items.forEach((item, index) => {
-            let angle = startAngle + (index * this.snapAngle);
+            let angle = centerAngle + (index * this.snapAngle);
             item.dataset.baseAngle = angle;
         });
 
@@ -905,7 +904,7 @@ class LawnCzarDial extends HTMLElement {
             });
             if (navigator.vibrate) navigator.vibrate(20);
 
-            this.dispatchEvent(new CustomEvent('lz-change', {
+            this.dispatchEvent(new CustomEvent('bzr-change', {
                 detail: {
                     index: this.activeIndex,
                     item: this.items[this.activeIndex]
@@ -1558,7 +1557,7 @@ class LawnCzarDial extends HTMLElement {
 
 
 // Helper Item Component
-class LawnCzarItem extends HTMLElement {
+class BzrItem extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
@@ -1662,5 +1661,5 @@ class LawnCzarItem extends HTMLElement {
         `;
     }
 }
-customElements.define('lz-dial', LawnCzarDial);
-customElements.define('lz-item', LawnCzarItem);
+customElements.define('bzr-dial-menu', BzrDialMenu);
+customElements.define('bzr-item', BzrItem);

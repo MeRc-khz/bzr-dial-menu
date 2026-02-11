@@ -1,0 +1,18 @@
+{
+  "name": "bzr-dial-menu",
+  "version": "1.0.0",
+  "description": "## Table of Contents 1. [Quick Start](#quick-start) 2. [Component Attributes](#component-attributes) 3. [Item Configuration](#item-configuration) 4. [Customization](#customization) 5. [Events](#events) 6. [JavaScript API](#javascript-api) 7. [Examples](#examples)",
+  "main": "ipfs-config.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^7.3.1"
+  }
+}

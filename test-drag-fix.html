@@ -96,7 +96,7 @@
             }
         }
     </style>
-    <script src="lz-dial.js"></script>
+    <script type="module" src="/src/bzr-dial-menu.js"></script>
 </head>
 
 <body
@@ -184,7 +184,7 @@
                         </div>
                         <h1
                             class="dark:text-white text-text-main text-4xl md:text-5xl font-black leading-tight tracking-tighter uppercase">
-                            LZ-DIAL<br />
+                            BZR-DIAL-MENU<br />
                             <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">DRAG
                                 TEST</span>
                         </h1>
@@ -234,27 +234,27 @@
                             <h3 class="text-primary text-lg font-bold uppercase mb-4 text-center">Left Justified</h3>
                             <div
                                 class="min-h-[200px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded">
-                                <lz-dial id="dial-left" radius="140" justify="left">
+                                <bzr-dial-menu id="dial-left" radius="140" justify="left">
                                     <div slot="trigger-content" style="font-size:24px;">L</div>
-                                    <lz-item label="Home" icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff"
+                                    <bzr-item label="Home" icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff"
                                         href="#home">
-                                    </lz-item>
-                                    <lz-item label="Map"
+                                    </bzr-item>
+                                    <bzr-item label="Map"
                                         icon="https://api.iconify.design/mdi:map-marker.svg?color=%23ffffff"
-                                        href="#map"></lz-item>
-                                    <lz-item label="Sync" icon="https://api.iconify.design/mdi:sync.svg?color=%23ffffff"
+                                        href="#map"></bzr-item>
+                                    <bzr-item label="Sync" icon="https://api.iconify.design/mdi:sync.svg?color=%23ffffff"
                                         href="#sync">
-                                    </lz-item>
-                                    <lz-item label="Settings"
+                                    </bzr-item>
+                                    <bzr-item label="Settings"
                                         icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff" href="#settings">
-                                    </lz-item>
-                                    <lz-item label="Profile"
+                                    </bzr-item>
+                                    <bzr-item label="Profile"
                                         icon="https://api.iconify.design/mdi:account.svg?color=%23ffffff"
-                                        href="#profile"></lz-item>
-                                    <lz-item label="Help"
+                                        href="#profile"></bzr-item>
+                                    <bzr-item label="Help"
                                         icon="https://api.iconify.design/mdi:help-circle.svg?color=%23ffffff"
-                                        href="#help"></lz-item>
-                                </lz-dial>
+                                        href="#help"></bzr-item>
+                                </bzr-dial-menu>
                             </div>
                         </div>
 
@@ -263,27 +263,27 @@
                             <h3 class="text-primary text-lg font-bold uppercase mb-4 text-center">Center (Default)</h3>
                             <div
                                 class="min-h-[200px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded">
-                                <lz-dial id="dial-center" radius="140">
+                                <bzr-dial-menu id="dial-center" radius="140">
                                     <div slot="trigger-content" style="font-size:24px;">C</div>
-                                    <lz-item label="Home" icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff"
+                                    <bzr-item label="Home" icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff"
                                         href="#home">
-                                    </lz-item>
-                                    <lz-item label="Map"
+                                    </bzr-item>
+                                    <bzr-item label="Map"
                                         icon="https://api.iconify.design/mdi:map-marker.svg?color=%23ffffff"
-                                        href="#map"></lz-item>
-                                    <lz-item label="Sync" icon="https://api.iconify.design/mdi:sync.svg?color=%23ffffff"
+                                        href="#map"></bzr-item>
+                                    <bzr-item label="Sync" icon="https://api.iconify.design/mdi:sync.svg?color=%23ffffff"
                                         href="#sync">
-                                    </lz-item>
-                                    <lz-item label="Settings"
+                                    </bzr-item>
+                                    <bzr-item label="Settings"
                                         icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff" href="#settings">
-                                    </lz-item>
-                                    <lz-item label="Profile"
+                                    </bzr-item>
+                                    <bzr-item label="Profile"
                                         icon="https://api.iconify.design/mdi:account.svg?color=%23ffffff"
-                                        href="#profile"></lz-item>
-                                    <lz-item label="Help"
+                                        href="#profile"></bzr-item>
+                                    <bzr-item label="Help"
                                         icon="https://api.iconify.design/mdi:help-circle.svg?color=%23ffffff"
-                                        href="#help"></lz-item>
-                                </lz-dial>
+                                        href="#help"></bzr-item>
+                                </bzr-dial-menu>
                             </div>
                         </div>
 
@@ -292,27 +292,27 @@
                             <h3 class="text-primary text-lg font-bold uppercase mb-4 text-center">Right Justified</h3>
                             <div
                                 class="min-h-[200px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded">
-                                <lz-dial id="dial-right" radius="140" justify="right">
+                                <bzr-dial-menu id="dial-right" radius="140" justify="right">
                                     <div slot="trigger-content" style="font-size:24px;">R</div>
-                                    <lz-item label="Home" icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff"
+                                    <bzr-item label="Home" icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff"
                                         href="#home">
-                                    </lz-item>
-                                    <lz-item label="Map"
+                                    </bzr-item>
+                                    <bzr-item label="Map"
                                         icon="https://api.iconify.design/mdi:map-marker.svg?color=%23ffffff"
-                                        href="#map"></lz-item>
-                                    <lz-item label="Sync" icon="https://api.iconify.design/mdi:sync.svg?color=%23ffffff"
+                                        href="#map"></bzr-item>
+                                    <bzr-item label="Sync" icon="https://api.iconify.design/mdi:sync.svg?color=%23ffffff"
                                         href="#sync">
-                                    </lz-item>
-                                    <lz-item label="Settings"
+                                    </bzr-item>
+                                    <bzr-item label="Settings"
                                         icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff" href="#settings">
-                                    </lz-item>
-                                    <lz-item label="Profile"
+                                    </bzr-item>
+                                    <bzr-item label="Profile"
                                         icon="https://api.iconify.design/mdi:account.svg?color=%23ffffff"
-                                        href="#profile"></lz-item>
-                                    <lz-item label="Help"
+                                        href="#profile"></bzr-item>
+                                    <bzr-item label="Help"
                                         icon="https://api.iconify.design/mdi:help-circle.svg?color=%23ffffff"
-                                        href="#help"></lz-item>
-                                </lz-dial>
+                                        href="#help"></bzr-item>
+                                </bzr-dial-menu>
                             </div>
                         </div>
                     </div>
@@ -360,7 +360,7 @@
     </div>
 
     <script>
-        const dials = document.querySelectorAll('lz-dial');
+        const dials = document.querySelectorAll('bzr-dial-menu');
         const logger = document.getElementById('console');
 
         function log(message) {
@@ -371,7 +371,7 @@
         }
 
         dials.forEach(dial => {
-            dial.addEventListener('lz-change', (e) => {
+            dial.addEventListener('bzr-change', (e) => {
                 const label = e.detail.item.getAttribute('label');
                 const dialId = dial.id;
                 log(`[${dialId}] Active: ${label}`);

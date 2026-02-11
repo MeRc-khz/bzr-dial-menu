@@ -109,7 +109,7 @@
             --primary: #9775fa;
         }
     </style>
-    <script src="lz-dial.js"></script>
+    <script type="module" src="/src/bzr-dial-menu.js"></script>
 </head>
 
 <body
@@ -197,7 +197,7 @@
                         </div>
                         <h1
                             class="dark:text-white text-text-main text-4xl md:text-5xl font-black leading-tight tracking-tighter uppercase">
-                            LZ-DIAL<br />
+                            BZR-DIAL-MENU<br />
                             <span
                                 class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">CONFIGURATIONS</span>
                         </h1>
@@ -249,26 +249,26 @@
                             </h3>
                             <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Basic setup with default settings.
                                 FAB centered, standard radius.</p>
-                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;lz-dial&gt;
-  &lt;lz-item label="Home" 
+                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;bzr-dial-menu&gt;
+  &lt;bzr-item label="Home" 
     icon="..." href="#"&gt;
-  &lt;/lz-item&gt;
-  &lt;lz-item label="Settings" 
+  &lt;/bzr-item&gt;
+  &lt;bzr-item label="Settings" 
     icon="..." href="#"&gt;
-  &lt;/lz-item&gt;
-&lt;/lz-dial&gt;</code></pre>
+  &lt;/bzr-item&gt;
+&lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <lz-dial>
-                                    <lz-item label="Home" icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff"
-                                        href="#home"></lz-item>
-                                    <lz-item label="Settings"
+                                <bzr-dial-menu>
+                                    <bzr-item label="Home" icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff"
+                                        href="#home"></bzr-item>
+                                    <bzr-item label="Settings"
                                         icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff" href="#settings">
-                                    </lz-item>
-                                    <lz-item label="Profile"
+                                    </bzr-item>
+                                    <bzr-item label="Profile"
                                         icon="https://api.iconify.design/mdi:account.svg?color=%23ffffff"
-                                        href="#profile"></lz-item>
-                                </lz-dial>
+                                        href="#profile"></bzr-item>
+                                </bzr-dial-menu>
                             </div>
                         </div>
 
@@ -285,22 +285,22 @@
                                 <span
                                     class="inline-block bg-primary/10 border border-primary/30 text-primary px-2 py-0.5 rounded text-xs font-mono">justify="left"</span>
                             </div>
-                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;lz-dial justify="left"&gt;
+                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;bzr-dial-menu justify="left"&gt;
   &lt;!-- items --&gt;
-&lt;/lz-dial&gt;</code></pre>
+&lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <lz-dial justify="left">
-                                    <lz-item label="Home"
+                                <bzr-dial-menu justify="left">
+                                    <bzr-item label="Home"
                                         icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff">
-                                    </lz-item>
-                                    <lz-item label="Search"
-                                        icon="https://api.iconify.design/mdi:magnify.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Favorites"
-                                        icon="https://api.iconify.design/mdi:heart.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Settings"
-                                        icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff"></lz-item>
-                                </lz-dial>
+                                    </bzr-item>
+                                    <bzr-item label="Search"
+                                        icon="https://api.iconify.design/mdi:magnify.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Favorites"
+                                        icon="https://api.iconify.design/mdi:heart.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Settings"
+                                        icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff"></bzr-item>
+                                </bzr-dial-menu>
                             </div>
                         </div>
 
@@ -317,23 +317,23 @@
                                 <span
                                     class="inline-block bg-primary/10 border border-primary/30 text-primary px-2 py-0.5 rounded text-xs font-mono">justify="right"</span>
                             </div>
-                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;lz-dial justify="right"&gt;
+                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;bzr-dial-menu justify="right"&gt;
   &lt;!-- items --&gt;
-&lt;/lz-dial&gt;</code></pre>
+&lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <lz-dial justify="right">
-                                    <lz-item label="Dashboard"
+                                <bzr-dial-menu justify="right">
+                                    <bzr-item label="Dashboard"
                                         icon="https://api.iconify.design/mdi:view-dashboard.svg?color=%23ffffff">
-                                    </lz-item>
-                                    <lz-item label="Analytics"
-                                        icon="https://api.iconify.design/mdi:chart-line.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Reports"
+                                    </bzr-item>
+                                    <bzr-item label="Analytics"
+                                        icon="https://api.iconify.design/mdi:chart-line.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Reports"
                                         icon="https://api.iconify.design/mdi:file-document.svg?color=%23ffffff">
-                                    </lz-item>
-                                    <lz-item label="Settings"
-                                        icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff"></lz-item>
-                                </lz-dial>
+                                    </bzr-item>
+                                    <bzr-item label="Settings"
+                                        icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff"></bzr-item>
+                                </bzr-dial-menu>
                             </div>
                         </div>
 
@@ -350,19 +350,19 @@
                                 <span
                                     class="inline-block bg-primary/10 border border-primary/30 text-primary px-2 py-0.5 rounded text-xs font-mono">radius="180"</span>
                             </div>
-                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;lz-dial radius="180"&gt;
+                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;bzr-dial-menu radius="180"&gt;
   &lt;!-- items --&gt;
-&lt;/lz-dial&gt;</code></pre>
+&lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <lz-dial radius="180">
-                                    <lz-item label="Create"
-                                        icon="https://api.iconify.design/mdi:plus-circle.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Edit"
-                                        icon="https://api.iconify.design/mdi:pencil.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Delete"
-                                        icon="https://api.iconify.design/mdi:delete.svg?color=%23ffffff"></lz-item>
-                                </lz-dial>
+                                <bzr-dial-menu radius="180">
+                                    <bzr-item label="Create"
+                                        icon="https://api.iconify.design/mdi:plus-circle.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Edit"
+                                        icon="https://api.iconify.design/mdi:pencil.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Delete"
+                                        icon="https://api.iconify.design/mdi:delete.svg?color=%23ffffff"></bzr-item>
+                                </bzr-dial-menu>
                             </div>
                         </div>
 
@@ -379,24 +379,24 @@
                                 <span
                                     class="inline-block bg-primary/10 border border-primary/30 text-primary px-2 py-0.5 rounded text-xs font-mono">slot="trigger-content"</span>
                             </div>
-                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;lz-dial&gt;
+                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;bzr-dial-menu&gt;
   &lt;div slot="trigger-content"&gt;
     ☰
   &lt;/div&gt;
   &lt;!-- items --&gt;
-&lt;/lz-dial&gt;</code></pre>
+&lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <lz-dial>
+                                <bzr-dial-menu>
                                     <div slot="trigger-content" style="font-size:32px;">☰</div>
-                                    <lz-item label="Home"
+                                    <bzr-item label="Home"
                                         icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff">
-                                    </lz-item>
-                                    <lz-item label="About"
-                                        icon="https://api.iconify.design/mdi:information.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Contact"
-                                        icon="https://api.iconify.design/mdi:email.svg?color=%23ffffff"></lz-item>
-                                </lz-dial>
+                                    </bzr-item>
+                                    <bzr-item label="About"
+                                        icon="https://api.iconify.design/mdi:information.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Contact"
+                                        icon="https://api.iconify.design/mdi:email.svg?color=%23ffffff"></bzr-item>
+                                </bzr-dial-menu>
                             </div>
                         </div>
 
@@ -421,21 +421,21 @@
     --primary: #ff6b6b; 
   }
 &lt;/style&gt;
-&lt;lz-dial id="red-theme"&gt;
+&lt;bzr-dial-menu id="red-theme"&gt;
   &lt;!-- items --&gt;
-&lt;/lz-dial&gt;</code></pre>
+&lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <lz-dial id="red-theme">
-                                    <lz-item label="Alert"
-                                        icon="https://api.iconify.design/mdi:alert.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Warning"
+                                <bzr-dial-menu id="red-theme">
+                                    <bzr-item label="Alert"
+                                        icon="https://api.iconify.design/mdi:alert.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Warning"
                                         icon="https://api.iconify.design/mdi:alert-circle.svg?color=%23ffffff">
-                                    </lz-item>
-                                    <lz-item label="Error"
+                                    </bzr-item>
+                                    <bzr-item label="Error"
                                         icon="https://api.iconify.design/mdi:close-circle.svg?color=%23ffffff">
-                                    </lz-item>
-                                </lz-dial>
+                                    </bzr-item>
+                                </bzr-dial-menu>
                             </div>
                         </div>
 
@@ -460,19 +460,19 @@
     --primary: #4dabf7; 
   }
 &lt;/style&gt;
-&lt;lz-dial id="blue-theme"&gt;
+&lt;bzr-dial-menu id="blue-theme"&gt;
   &lt;!-- items --&gt;
-&lt;/lz-dial&gt;</code></pre>
+&lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <lz-dial id="blue-theme">
-                                    <lz-item label="Messages"
-                                        icon="https://api.iconify.design/mdi:message.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Calls"
-                                        icon="https://api.iconify.design/mdi:phone.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Video"
-                                        icon="https://api.iconify.design/mdi:video.svg?color=%23ffffff"></lz-item>
-                                </lz-dial>
+                                <bzr-dial-menu id="blue-theme">
+                                    <bzr-item label="Messages"
+                                        icon="https://api.iconify.design/mdi:message.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Calls"
+                                        icon="https://api.iconify.design/mdi:phone.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Video"
+                                        icon="https://api.iconify.design/mdi:video.svg?color=%23ffffff"></bzr-item>
+                                </bzr-dial-menu>
                             </div>
                         </div>
 
@@ -497,20 +497,20 @@
     --primary: #9775fa; 
   }
 &lt;/style&gt;
-&lt;lz-dial id="purple-theme"&gt;
+&lt;bzr-dial-menu id="purple-theme"&gt;
   &lt;!-- items --&gt;
-&lt;/lz-dial&gt;</code></pre>
+&lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <lz-dial id="purple-theme">
-                                    <lz-item label="Design"
-                                        icon="https://api.iconify.design/mdi:palette.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Art"
+                                <bzr-dial-menu id="purple-theme">
+                                    <bzr-item label="Design"
+                                        icon="https://api.iconify.design/mdi:palette.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Art"
                                         icon="https://api.iconify.design/mdi:brush.svg?color=%23ffffff">
-                                    </lz-item>
-                                    <lz-item label="Music"
-                                        icon="https://api.iconify.design/mdi:music.svg?color=%23ffffff"></lz-item>
-                                </lz-dial>
+                                    </bzr-item>
+                                    <bzr-item label="Music"
+                                        icon="https://api.iconify.design/mdi:music.svg?color=%23ffffff"></bzr-item>
+                                </bzr-dial-menu>
                             </div>
                         </div>
 
@@ -523,30 +523,30 @@
                             </h3>
                             <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">The dial automatically distributes
                                 items evenly around the circle.</p>
-                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;lz-dial&gt;
+                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;bzr-dial-menu&gt;
   &lt;!-- 8 items --&gt;
-&lt;/lz-dial&gt;</code></pre>
+&lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <lz-dial radius="150">
-                                    <lz-item label="Home"
+                                <bzr-dial-menu radius="150">
+                                    <bzr-item label="Home"
                                         icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff">
-                                    </lz-item>
-                                    <lz-item label="Search"
-                                        icon="https://api.iconify.design/mdi:magnify.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Favorites"
-                                        icon="https://api.iconify.design/mdi:heart.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Settings"
-                                        icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Profile"
-                                        icon="https://api.iconify.design/mdi:account.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Messages"
-                                        icon="https://api.iconify.design/mdi:message.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Notifications"
-                                        icon="https://api.iconify.design/mdi:bell.svg?color=%23ffffff"></lz-item>
-                                    <lz-item label="Help"
-                                        icon="https://api.iconify.design/mdi:help-circle.svg?color=%23ffffff"></lz-item>
-                                </lz-dial>
+                                    </bzr-item>
+                                    <bzr-item label="Search"
+                                        icon="https://api.iconify.design/mdi:magnify.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Favorites"
+                                        icon="https://api.iconify.design/mdi:heart.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Settings"
+                                        icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Profile"
+                                        icon="https://api.iconify.design/mdi:account.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Messages"
+                                        icon="https://api.iconify.design/mdi:message.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Notifications"
+                                        icon="https://api.iconify.design/mdi:bell.svg?color=%23ffffff"></bzr-item>
+                                    <bzr-item label="Help"
+                                        icon="https://api.iconify.design/mdi:help-circle.svg?color=%23ffffff"></bzr-item>
+                                </bzr-dial-menu>
                             </div>
                         </div>
                     </div>
@@ -617,8 +617,8 @@
 
     <script>
         // Log events from all dials
-        document.querySelectorAll('lz-dial').forEach((dial, index) => {
-            dial.addEventListener('lz-change', (e) => {
+        document.querySelectorAll('bzr-dial-menu').forEach((dial, index) => {
+            dial.addEventListener('bzr-change', (e) => {
                 console.log(`Dial ${index + 1}: ${e.detail.item.getAttribute('label')}`);
             });
         });

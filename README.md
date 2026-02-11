@@ -1,4 +1,4 @@
-# LZ-Dial Component - Configuration Guide
+# Bzr-Dial Component - Configuration Guide
 
 ## Table of Contents
 1. [Quick Start](#quick-start)
@@ -15,23 +15,23 @@
 
 ### 1. Include the Component
 ```html
-<script src="lz-dial.js"></script>
+<script type="module" src="/src/bzr-dial-menu.js"></script>
 ```
 
 ### 2. Basic Usage
 ```html
-<lz-dial>
-    <lz-item label="Home" icon="home.svg" href="#home"></lz-item>
-    <lz-item label="Settings" icon="settings.svg" href="#settings"></lz-item>
-    <lz-item label="Profile" icon="profile.svg" href="#profile"></lz-item>
-</lz-dial>
+<bzr-dial-menu>
+    <bzr-item label="Home" icon="home.svg" href="#home"></bzr-item>
+    <bzr-item label="Settings" icon="settings.svg" href="#settings"></bzr-item>
+    <bzr-item label="Profile" icon="profile.svg" href="#profile"></bzr-item>
+</bzr-dial-menu>
 ```
 
 ---
 
 ## Component Attributes
 
-### `<lz-dial>` Attributes
+### `<bzr-dial-menu>` Attributes
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
@@ -44,44 +44,44 @@
 
 **Default (centered):**
 ```html
-<lz-dial>
+<bzr-dial-menu>
     <!-- items -->
-</lz-dial>
+</bzr-dial-menu>
 ```
 
 **Left-aligned FAB:**
 ```html
-<lz-dial justify="left">
+<bzr-dial-menu justify="left">
     <!-- items -->
-</lz-dial>
+</bzr-dial-menu>
 ```
 
 **Right-aligned FAB:**
 ```html
-<lz-dial justify="right">
+<bzr-dial-menu justify="right">
     <!-- items -->
-</lz-dial>
+</bzr-dial-menu>
 ```
 
 **Custom radius:**
 ```html
-<lz-dial radius="180">
+<bzr-dial-menu radius="180">
     <!-- items -->
-</lz-dial>
+</bzr-dial-menu>
 ```
 
 **Combined:**
 ```html
-<lz-dial radius="150" justify="right">
+<bzr-dial-menu radius="150" justify="right">
     <!-- items -->
-</lz-dial>
+</bzr-dial-menu>
 ```
 
 ---
 
 ## Item Configuration
 
-### `<lz-item>` Attributes
+### `<bzr-item>` Attributes
 
 | Attribute | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -93,21 +93,21 @@
 
 **With icon and link:**
 ```html
-<lz-item 
+<bzr-item 
     label="Home" 
     icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff" 
     href="#home">
-</lz-item>
+</bzr-item>
 ```
 
 **Without icon (shows placeholder):**
 ```html
-<lz-item label="Settings" href="#settings"></lz-item>
+<bzr-item label="Settings" href="#settings"></bzr-item>
 ```
 
 **Without link (display only):**
 ```html
-<lz-item label="Info" icon="info.svg"></lz-item>
+<bzr-item label="Info" icon="info.svg"></bzr-item>
 ```
 
 ### Inline Content Attributes
@@ -130,57 +130,57 @@ Display rich media and interactive content inline instead of navigating away!
 
 **Audio Player:**
 ```html
-<lz-item 
+<bzr-item 
     label="Podcast" 
     icon="music.svg"
     data-audio="episode.mp3"
     data-autoplay>
-</lz-item>
+</bzr-item>
 ```
 
 **Video Player:**
 ```html
-<lz-item 
+<bzr-item 
     label="Tutorial" 
     icon="video.svg"
     data-video="tutorial.mp4">
-</lz-item>
+</bzr-item>
 ```
 
 **Email Form:**
 ```html
-<lz-item 
+<bzr-item 
     label="Contact" 
     icon="email.svg"
     data-email="hello@example.com">
-</lz-item>
+</bzr-item>
 ```
 
 **Phone Dialer:**
 ```html
-<lz-item 
+<bzr-item 
     label="Call Us" 
     icon="phone.svg"
     data-phone="+1-555-123-4567">
-</lz-item>
+</bzr-item>
 ```
 
 **OpenStreetMap:**
 ```html
-<lz-item 
+<bzr-item 
     label="Location" 
     icon="map.svg"
     data-map="Eiffel Tower, Paris, France">
-</lz-item>
+</bzr-item>
 ```
 
 **Embed Website:**
 ```html
-<lz-item 
+<bzr-item 
     label="Docs" 
     icon="web.svg"
     data-iframe="https://docs.example.com">
-</lz-item>
+</bzr-item>
 ```
 
 ### Overlay Features
@@ -202,13 +202,13 @@ When inline content is active, the overlay provides:
 You can customize the FAB button content using the `trigger-content` slot:
 
 ```html
-<lz-dial>
+<bzr-dial-menu>
     <!-- Custom trigger content -->
     <div slot="trigger-content" style="font-size:24px;">☰</div>
     
     <!-- Items -->
-    <lz-item label="Home" icon="home.svg"></lz-item>
-</lz-dial>
+    <bzr-item label="Home" icon="home.svg"></bzr-item>
+</bzr-dial-menu>
 ```
 
 **Examples:**
@@ -239,7 +239,7 @@ You can customize the FAB button content using the `trigger-content` slot:
 The component uses CSS custom properties that you can override:
 
 ```css
-lz-dial {
+bzr-dial-menu {
     --primary: #00ff9d;    /* Primary color (active items, glow) */
     --bg: #111;            /* Background color */
     --text: #fff;          /* Text color */
@@ -249,23 +249,23 @@ lz-dial {
 **Example:**
 ```html
 <style>
-    lz-dial {
+    bzr-dial-menu {
         --primary: #ff6b6b;  /* Red theme */
         --bg: #2c3e50;
         --text: #ecf0f1;
     }
 </style>
 
-<lz-dial>
+<bzr-dial-menu>
     <!-- items -->
-</lz-dial>
+</bzr-dial-menu>
 ```
 
 ---
 
 ## Events
 
-### `lz-change`
+### `bzr-change`
 
 Fired when the active item changes (when an item reaches the active position).
 
@@ -273,15 +273,15 @@ Fired when the active item changes (when an item reaches the active position).
 ```javascript
 {
     index: Number,      // Index of the active item (0-based)
-    item: HTMLElement   // The lz-item element
+    item: HTMLElement   // The bzr-item element
 }
 ```
 
 **Usage:**
 ```javascript
-const dial = document.querySelector('lz-dial');
+const dial = document.querySelector('bzr-dial-menu');
 
-dial.addEventListener('lz-change', (event) => {
+dial.addEventListener('bzr-change', (event) => {
     const { index, item } = event.detail;
     const label = item.getAttribute('label');
     
@@ -291,7 +291,7 @@ dial.addEventListener('lz-change', (event) => {
 
 **Example - Update UI:**
 ```javascript
-dial.addEventListener('lz-change', (event) => {
+dial.addEventListener('bzr-change', (event) => {
     const label = event.detail.item.getAttribute('label');
     document.getElementById('status').textContent = `Selected: ${label}`;
 });
@@ -299,7 +299,7 @@ dial.addEventListener('lz-change', (event) => {
 
 **Example - Track Analytics:**
 ```javascript
-dial.addEventListener('lz-change', (event) => {
+dial.addEventListener('bzr-change', (event) => {
     const label = event.detail.item.getAttribute('label');
     analytics.track('dial_item_selected', { item: label });
 });
@@ -312,20 +312,20 @@ dial.addEventListener('lz-change', (event) => {
 ### Properties
 
 ```javascript
-const dial = document.querySelector('lz-dial');
+const dial = document.querySelector('bzr-dial-menu');
 
 // Read current state
 console.log(dial.isOpen);        // Boolean: is dial open?
 console.log(dial.rotation);      // Number: current rotation in radians
 console.log(dial.activeIndex);   // Number: index of active item
-console.log(dial.items);         // Array: all lz-item elements
+console.log(dial.items);         // Array: all bzr-item elements
 console.log(dial.radius);        // Number: dial radius
 ```
 
 ### Methods
 
 ```javascript
-const dial = document.querySelector('lz-dial');
+const dial = document.querySelector('bzr-dial-menu');
 
 // Toggle open/close
 dial.toggle();
@@ -340,9 +340,9 @@ dial.toggle();        // Toggle
 
 **Add items dynamically:**
 ```javascript
-const dial = document.querySelector('lz-dial');
+const dial = document.querySelector('bzr-dial-menu');
 
-const newItem = document.createElement('lz-item');
+const newItem = document.createElement('bzr-item');
 newItem.setAttribute('label', 'New Item');
 newItem.setAttribute('icon', 'new-icon.svg');
 newItem.setAttribute('href', '#new');
@@ -352,13 +352,13 @@ dial.appendChild(newItem);
 
 **Remove items:**
 ```javascript
-const items = dial.querySelectorAll('lz-item');
+const items = dial.querySelectorAll('bzr-item');
 items[2].remove(); // Remove third item
 ```
 
 **Update items:**
 ```javascript
-const item = dial.querySelector('lz-item[label="Home"]');
+const item = dial.querySelector('bzr-item[label="Home"]');
 item.setAttribute('label', 'Dashboard');
 item.setAttribute('icon', 'dashboard.svg');
 ```
@@ -370,32 +370,32 @@ item.setAttribute('icon', 'dashboard.svg');
 ### Example 1: Simple Navigation Menu
 
 ```html
-<lz-dial justify="right">
+<bzr-dial-menu justify="right">
     <div slot="trigger-content">☰</div>
     
-    <lz-item label="Home" icon="home.svg" href="/"></lz-item>
-    <lz-item label="About" icon="info.svg" href="/about"></lz-item>
-    <lz-item label="Services" icon="services.svg" href="/services"></lz-item>
-    <lz-item label="Contact" icon="contact.svg" href="/contact"></lz-item>
-</lz-dial>
+    <bzr-item label="Home" icon="home.svg" href="/"></bzr-item>
+    <bzr-item label="About" icon="info.svg" href="/about"></bzr-item>
+    <bzr-item label="Services" icon="services.svg" href="/services"></bzr-item>
+    <bzr-item label="Contact" icon="contact.svg" href="/contact"></bzr-item>
+</bzr-dial-menu>
 ```
 
 ### Example 2: App Actions
 
 ```html
-<lz-dial radius="150" justify="left">
+<bzr-dial-menu radius="150" justify="left">
     <div slot="trigger-content">+</div>
     
-    <lz-item label="New Post" icon="edit.svg"></lz-item>
-    <lz-item label="Upload Photo" icon="camera.svg"></lz-item>
-    <lz-item label="Create Event" icon="calendar.svg"></lz-item>
-    <lz-item label="Start Chat" icon="message.svg"></lz-item>
-</lz-dial>
+    <bzr-item label="New Post" icon="edit.svg"></bzr-item>
+    <bzr-item label="Upload Photo" icon="camera.svg"></bzr-item>
+    <bzr-item label="Create Event" icon="calendar.svg"></bzr-item>
+    <bzr-item label="Start Chat" icon="message.svg"></bzr-item>
+</bzr-dial-menu>
 
 <script>
-    const dial = document.querySelector('lz-dial');
+    const dial = document.querySelector('bzr-dial-menu');
     
-    dial.addEventListener('lz-change', (e) => {
+    dial.addEventListener('bzr-change', (e) => {
         const label = e.detail.item.getAttribute('label');
         
         // Handle action based on label
@@ -415,14 +415,14 @@ item.setAttribute('icon', 'dashboard.svg');
 ### Example 3: Settings Panel
 
 ```html
-<lz-dial>
-    <lz-item label="Profile" icon="user.svg" href="#profile"></lz-item>
-    <lz-item label="Privacy" icon="lock.svg" href="#privacy"></lz-item>
-    <lz-item label="Notifications" icon="bell.svg" href="#notifications"></lz-item>
-    <lz-item label="Appearance" icon="palette.svg" href="#appearance"></lz-item>
-    <lz-item label="Help" icon="help.svg" href="#help"></lz-item>
-    <lz-item label="Logout" icon="logout.svg" href="/logout"></lz-item>
-</lz-dial>
+<bzr-dial-menu>
+    <bzr-item label="Profile" icon="user.svg" href="#profile"></bzr-item>
+    <bzr-item label="Privacy" icon="lock.svg" href="#privacy"></bzr-item>
+    <bzr-item label="Notifications" icon="bell.svg" href="#notifications"></bzr-item>
+    <bzr-item label="Appearance" icon="palette.svg" href="#appearance"></bzr-item>
+    <bzr-item label="Help" icon="help.svg" href="#help"></bzr-item>
+    <bzr-item label="Logout" icon="logout.svg" href="/logout"></bzr-item>
+</bzr-dial-menu>
 ```
 
 ### Example 4: With Custom Styling
@@ -436,39 +436,39 @@ item.setAttribute('icon', 'dashboard.svg');
     }
 </style>
 
-<lz-dial id="custom-dial" radius="160" justify="right">
+<bzr-dial-menu id="custom-dial" radius="160" justify="right">
     <div slot="trigger-content" style="font-size:28px; font-weight:bold;">
         ⚡
     </div>
     
-    <lz-item label="Dashboard" icon="dashboard.svg" href="/dashboard"></lz-item>
-    <lz-item label="Analytics" icon="chart.svg" href="/analytics"></lz-item>
-    <lz-item label="Reports" icon="report.svg" href="/reports"></lz-item>
-    <lz-item label="Settings" icon="settings.svg" href="/settings"></lz-item>
-</lz-dial>
+    <bzr-item label="Dashboard" icon="dashboard.svg" href="/dashboard"></bzr-item>
+    <bzr-item label="Analytics" icon="chart.svg" href="/analytics"></bzr-item>
+    <bzr-item label="Reports" icon="report.svg" href="/reports"></bzr-item>
+    <bzr-item label="Settings" icon="settings.svg" href="/settings"></bzr-item>
+</bzr-dial-menu>
 ```
 
 ### Example 5: Using Iconify Icons
 
 ```html
-<lz-dial>
-    <lz-item 
+<bzr-dial-menu>
+    <bzr-item 
         label="Home" 
         icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff">
-    </lz-item>
-    <lz-item 
+    </bzr-item>
+    <bzr-item 
         label="Search" 
         icon="https://api.iconify.design/mdi:magnify.svg?color=%23ffffff">
-    </lz-item>
-    <lz-item 
+    </bzr-item>
+    <bzr-item 
         label="Favorites" 
         icon="https://api.iconify.design/mdi:heart.svg?color=%23ffffff">
-    </lz-item>
-    <lz-item 
+    </bzr-item>
+    <bzr-item 
         label="Settings" 
         icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff">
-    </lz-item>
-</lz-dial>
+    </bzr-item>
+</bzr-dial-menu>
 ```
 
 ---

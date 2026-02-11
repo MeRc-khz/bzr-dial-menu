@@ -96,7 +96,7 @@
             }
         }
     </style>
-    <script src="lz-dial.js"></script>
+    <script type="module" src="/src/bzr-dial-menu.js"></script>
 </head>
 
 <body
@@ -184,7 +184,7 @@
                         </div>
                         <h1
                             class="dark:text-white text-text-main text-4xl md:text-5xl font-black leading-tight tracking-tighter uppercase">
-                            LZ-DIAL<br />
+                            BZR-DIAL-MENU<br />
                             <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">LOCAL
                                 MEDIA</span>
                         </h1>
@@ -275,37 +275,37 @@
     </div>
 
     <!-- The Component -->
-    <lz-dial radius="140" justify="left">
+    <bzr-dial-menu radius="140" justify="left">
         <div slot="trigger-content" style="font-size:24px;">+</div>
 
-        <lz-item label="Audio" icon="https://api.iconify.design/mdi:music.svg?color=%23ffffff"
-            data-audio="media/feb7_2006_N_trafx_Show.mp3"></lz-item>
+        <bzr-item label="Audio" icon="https://api.iconify.design/mdi:music.svg?color=%23ffffff"
+            data-audio="media/feb7_2006_N_trafx_Show.mp3"></bzr-item>
 
-        <lz-item label="Video" icon="https://api.iconify.design/mdi:video.svg?color=%23ffffff"
-            data-video="media/paperchasers2.mp4"></lz-item>
+        <bzr-item label="Video" icon="https://api.iconify.design/mdi:video.svg?color=%23ffffff"
+            data-video="media/paperchasers2.mp4"></bzr-item>
 
-        <lz-item label="Image" icon="media/qrillienlogo.png" data-image="media/qrillienlogo.png"></lz-item>
+        <bzr-item label="Image" icon="media/qrillienlogo.png" data-image="media/qrillienlogo.png"></bzr-item>
 
-        <lz-item label="Email" icon="https://api.iconify.design/mdi:email.svg?color=%23ffffff"
-            data-email="contact@lawnczar.com"></lz-item>
+        <bzr-item label="Email" icon="https://api.iconify.design/mdi:email.svg?color=%23ffffff"
+            data-email="contact@lawnczar.com"></bzr-item>
 
-        <lz-item label="Call" icon="https://api.iconify.design/mdi:phone.svg?color=%23ffffff"
-            data-phone="+1-555-LAWN-CZAR"></lz-item>
+        <bzr-item label="Call" icon="https://api.iconify.design/mdi:phone.svg?color=%23ffffff"
+            data-phone="+1-555-LAWN-CZAR"></bzr-item>
 
-        <lz-item label="Home" icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff" href="#home"></lz-item>
-        <lz-item label="Settings" icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff" href="#settings">
-        </lz-item>
+        <bzr-item label="Home" icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff" href="#home"></bzr-item>
+        <bzr-item label="Settings" icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff" href="#settings">
+        </bzr-item>
 
-    </lz-dial>
+    </bzr-dial-menu>
 
     <script type="module">
         // IPFS Logic removed to use local media directly
         // import { getIpfsUrl } from './ipfs-config.js';
 
-        const dial = document.querySelector('lz-dial');
+        const dial = document.querySelector('bzr-dial-menu');
         const logger = document.getElementById('console');
 
-        dial.addEventListener('lz-change', (e) => {
+        dial.addEventListener('bzr-change', (e) => {
             const label = e.detail.item.getAttribute('label');
             const p = document.createElement('div');
             p.textContent = `> Active: ${label}`;

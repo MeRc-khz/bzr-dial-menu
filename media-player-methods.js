@@ -1,4 +1,4 @@
-// Canvas-based Media Player Methods for lz-dial component
+// Canvas-based Media Player Methods for bzr-dial-menu component
 
 // Add these methods to the LZDial class
 
