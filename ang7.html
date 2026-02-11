@@ -1,0 +1,465 @@
+<!DOCTYPE HTML>
+<HTML>
+<head>
+<meta charset="UTF-8">
+<style type="text/css">
+html{height:100%;}
+body{height:100%;margin:0px;}
+</style>
+</head>
+<body>
+<div id="candiv"><canvas id="canvas" width="1440" height="880">!supported</canvas></div>
+<script type = "text/javascript">
+var wHeight = window.innerHeight;
+var wWidth = window.innerWidth;
+window.addEventListener('load', winloaded, false);
+//
+function winloaded() {
+    var candiv = document.getElementById('candiv');
+    var cvs = document.getElementById('canvas');
+    cvs.height = wHeight;
+    cvs.width = wWidth;
+    //oWidth and oHeight if/else statement for mobile web browsers
+    //assign width height canvas values according to screen orientation
+    //user agent detection script
+    //hit
+    app();
+
+}
+
+function app() {
+    var cvs = document.getElementById('canvas');
+    if (!cvs || !cvs.getContext) {
+        return;
+    }
+    var ctx = cvs.getContext("2d");
+    if (!ctx) {
+        return;
+    }
+	var iconHead = "Lawn Czar";
+	var iconDir;
+	var hitIt = false;
+	var easeVal = false;
+    var mouseX = 0;
+    var mouseY = 0;
+    var inc;
+    var dec;
+    var mAngle = 0;
+    var old_mAngle;
+
+    var mCoord = {
+        x: 0,
+        y: 0
+    };
+    var touches = [];
+    var arcPath = {
+        x: 0,
+        y: 250,
+        r: 200,
+        angle: 0
+    };
+    var arcCenter = {
+        x: arcPath.x,
+        y: arcPath.y,
+        r: 100,
+        angle: 0
+    };
+	//
+    var arcZero = {
+        x: arcCenter.x + arcPath.r,
+        y: arcCenter.y,
+        r: 5,
+        angle: 0
+    };
+	var lineMoves = 0;
+	var lineReup = {x:0,y:0};
+	var moveIcon = false;
+    var hitValue = false;
+	var holdMove = false;
+    var a45 = .7854;
+    var y270 = arcPath.y - arcPath.r - 50;
+    var y90 = arcPath.y + arcPath.r + 50;
+    var x0 = arcPath.x + arcPath.r + 50;
+	//adjust Speeed of dial
+    var eSpeed = 0.35;
+    
+	var uLine = {x: wWidth, y: arcZero.y};
+	var theLine={x:wWidth, y: arcZero.y};
+    var iconXy = [{
+        x: 0,
+        y: 0,
+        r: 50,
+		t:0
+    }, {
+        x: 0,
+        y: 0,
+        r: 50,
+		t:1
+    }, {
+        x: 0,
+        y: 0,
+        r: 50,
+		t:2
+    }, {
+        x: 0,
+        y: 0,
+        r: 50,
+		t:3
+    }, {
+        x: 0,
+        y: 0,
+        r: 50,
+		t:4
+    }];
+    var iconAng = [{
+        a: -90
+    }, {
+        a: -45
+    }, {
+        a: 0
+    }, {
+        a: 45
+    }, {
+        a: 90
+    }];
+    //x:cosine(arcCenter.x(250),neg90a(-90),arcPath.r(200))
+
+    function touchHandler(event) {
+        touches = event.changedTouches;
+        //alert(touches);
+        var first = touches[0];
+        var type = "";
+        touchX = event.targetTouches[0].pageX;
+        touchY = event.targetTouches[0].pageY;
+        console.log("touchX" + touchX + "touchY" + touchY);
+        switch (event.type) {
+            case "touchstart":
+                type = "mousedown";
+
+                break;
+
+            case "touchmove":
+                type = "mousemove";
+                break;
+
+            case "touchend":
+                type = "mouseup";
+                break;
+            default:
+                return;
+        }
+
+        //initMouseEvent(type, canBubble, cancelable, view, clickCount, 
+        //           screenX, screenY, clientX, clientY, ctrlKey, 
+        //           altKey, shiftKey, metaKey, button, relatedTarget);
+
+        var simulatedEvent = document.createEvent("MouseEvent");
+        simulatedEvent.initMouseEvent(type, true, true, window, 1,
+        first.screenX, first.screenY,
+        first.clientX, first.clientY, false,
+        false, false, false, 0 /*left*/ , null);
+
+        first.target.dispatchEvent(simulatedEvent);
+        event.preventDefault();
+    }
+
+    function cosine(xVal, angVal, radVal) {
+        var cosVal;
+        cosVal = xVal + Math.cos(angVal) * radVal;
+
+        return cosVal;
+    }
+
+    function sine(yVal, angVal, radVal) {
+        var sineVal;
+        sineVal = yVal + Math.sin(angVal) * radVal
+        return sineVal;
+    }
+
+   
+    //find the angle of three points on the canvas
+    function find_angle(p0, p1, c) {
+        var p0c = Math.sqrt(Math.pow(c.x - p0.x, 2) + Math.pow(c.y - p0.y, 2)); // p0->c (b)   
+        var p1c = Math.sqrt(Math.pow(c.x - p1.x, 2) + Math.pow(c.y - p1.y, 2)); // p1->c (a)
+        var p0p1 = Math.sqrt(Math.pow(p1.x - p0.x, 2) + Math.pow(p1.y - p0.y, 2)); // p0->p1 (c)
+        return Math.acos((p1c * p1c + p0c * p0c - p0p1 * p0p1) / (2 * p1c * p0c));
+    }
+
+    function eMouseMove(event) {
+        mCoord.x = event.pageX;
+        mCoord.y = event.pageY;
+    }
+
+    function change_angles(newAngle) {
+
+        if (newAngle == "inc") {
+            for (var i = 0; i < iconAng.length; i++) {
+                iconAng[i].a += 1.75;
+				iconDir = "up";
+            }
+        } else if (newAngle == "dec") {
+            for (var i = 0; i < iconAng.length; i++) {
+                iconAng[i].a -= 1.75;
+				iconDir="down";
+            }
+            //degrees or radian coversion is to fast
+        }
+    }
+	
+function easeIcon(direction){
+if (direction == "up") {
+            for (var i = 0; i < iconAng.length; i++) {
+                iconAng[i].a += eSpeed;
+            }
+        } else if (direction == "down") {
+            for (var i = 0; i < iconAng.length; i++) {
+                iconAng[i].a -= eSpeed;
+			
+            }
+            //degrees or radian coversion is to fast
+        }
+
+}
+    function hitTest(mouse, circle) {
+
+        var mX = mouse.x;
+        var mY = mouse.y;
+        var crX = circle.x + circle.r;
+        var clX = circle.x - circle.r;
+        var ctY = circle.y - circle.r;
+        var cbY = circle.y + circle.r;
+        hitValue = false;
+        if ((mX < crX) && (mX > clX) && (mY > ctY) && (mY < cbY)) {
+            hitValue = true;
+        } else {
+            hitValue = false;
+        }
+        return hitValue;
+    }
+ function drawLine(p1, p2){
+	
+	var lSpeed = 25;
+        var dx = p2.x - p1.x;
+        var dy = p2.y - p1.y;
+        var distance = Math.sqrt(dx * dx + dy * dy);
+lineMoves = distance/lSpeed;
+       var xUnits = (p2.x - p1.x)/lineMoves;
+	   var yUnits = (p2.y - p1.y)/lineMoves;
+	   var lUpdate = {x:xUnits,y:yUnits};
+	   return lUpdate;
+
+    }
+/////BEGIN THE DRAW FUNCTION HEEERRRREEE????/////////
+    function draw() {
+	function eClicked(evt){
+		if(evt.type =="mousedown"){
+		holdMove = true;
+		lineMoves = 0;
+		theLine={x:wWidth, y: arcZero.y};
+		lineReup = {x:0,y:0};
+}
+}
+function eClacked(evt){
+if(evt.type =="mouseup"){
+holdMove = false;
+for (var i = 0; i < iconAng.length; i++) {
+                iconAng[i].a += 0;
+            }
+//alert("UPUPUP");
+}
+}
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        //calculate the 45 and 90 degree angles based on mCoord xy being == to 0 degrees. scratch that
+        if (mAngle != old_mAngle) {
+if(holdMove == true){
+            if (mAngle < old_mAngle) {
+
+                for (var i = 0; i < iconXy.length; i++) {
+
+                    hitTest(mCoord, iconXy[i]);
+
+                    if (hitValue == true) {
+                        change_angles('dec');
+                        break;
+                    }else{
+					moveIcon = true;
+					}
+                }
+
+            } else {
+
+                for (var i = 0; i < iconXy.length; i++) {
+                    hitTest(mCoord, iconXy[i]);
+                    if (hitValue == true) {
+                        change_angles('inc');
+                        break;
+                    }else{
+					moveIcon = true;
+					}
+                }
+
+            }
+            hitValue = false;
+            old_mAngle = mAngle;
+        
+		}
+		}
+		
+///ease into zero position//////////////////////////
+if(moveIcon == true){
+
+for(var i = 0; i < iconXy.length; i++){
+            hitIt = hitTest(iconXy[i],arcZero);
+			//console.log("this is being hit");
+			
+			if(hitIt == false){
+			easeIcon(iconDir);
+			//make easeIcon return a value of iconXy 
+			// number 0 - 5, use a switch statement to popup text info for icon an activate lawnCzar logo
+			
+		}else{
+		switch(iconXy[i].t){
+		case 0:
+		//var uLine = {x: wWidth, y: arcZero.y};
+	//var theLine={x:wWidth, y: arcZero.y};
+		iconHead = "Sign In";
+		if(theLine.x > arcZero.x ){
+		lineReup = drawLine(uLine, arcZero);
+		}
+		break;
+		case 1:
+		iconHead = "Sync Route";
+		if(theLine.x > arcZero.x ){
+		lineReup = drawLine(uLine, arcZero);
+		}
+		break;
+		case 2:
+		iconHead = "Help";
+		if(theLine.x > arcZero.x ){
+		lineReup = drawLine(uLine, arcZero);
+		}
+		break;
+		case 3:
+		iconHead = "Make a Route";
+		if(theLine.x > arcZero.x ){
+		lineReup = drawLine(uLine, arcZero);
+		}
+		break;
+		case 4:
+		iconHead = "Find a Sell";
+		if(theLine.x > arcZero.x ){
+		lineReup = drawLine(uLine, arcZero);
+		}
+		break;
+		
+		}
+		
+		//text variale can be iconXy[i].txt or number for case statement
+		moveIcon = false;
+		break;
+		
+		}
+		
+			}
+		
+		}
+		
+        // /// Paths and there properties  center dot /// //
+        ctx.fillStyle = "#FF0000";
+        ctx.beginPath();
+        ctx.arc(arcCenter.x, arcCenter.y, arcCenter.r, 0, Math.PI * 2, true);
+        ctx.fill();
+        ctx.closePath();
+
+        //point at zero angle radius on arc
+        ctx.fillStyle = "#000000";
+        ctx.beginPath();
+        ctx.arc(arcZero.x, arcZero.y, arcZero.r, 0, Math.PI * 2, true);
+        ctx.fill();
+        ctx.closePath();
+
+        if (mCoord.y > y270 && mCoord.y < arcPath.y && mCoord.x <= x0) {
+            mAngle = -(find_angle(mCoord, arcZero, arcPath));
+        } else if (mCoord.y > arcPath.y && mCoord.y < y90 && mCoord.x <= x0) {
+            mAngle = find_angle(mCoord, arcZero, arcPath);
+        }
+
+        var pOnArc = {
+            x: cosine(arcCenter.x, mAngle, arcPath.r),
+            y: sine(arcCenter.y, mAngle, arcPath.r)
+        };
+
+        for (var i = 0; i < iconXy.length; i++) {
+            iconXy[i].x = cosine(arcCenter.x, iconAng[i].a * Math.PI / 180, arcPath.r);
+            iconXy[i].y = sine(arcCenter.y, iconAng[i].a * Math.PI / 180, arcPath.r);
+        }
+
+        for (var i = 0; i < iconXy.length; i++) {
+            ctx.strokeStyle = "#000000";
+            ctx.beginPath();
+            ctx.arc(iconXy[i].x, iconXy[i].y, 50, 0, Math.PI * 2, true);
+            ctx.stroke();
+            ctx.closePath();
+        }
+	////////????????Draw LINE under icon heading????????////////////		
+		if(theLine.x > arcZero.x){
+		lineMoves--;
+		theLine.x +=lineReup.x;
+		theLine.y +=lineReup.y;
+		}else{
+		lineMoves = 0;
+		}
+		var grad = ctx.createLinearGradient(0,0,100,0);
+		
+		grad.addColorStop(0,'rgb(255,255,255)');
+		grad.addColorStop(0.5,'rgb(126,126,126)');
+		grad.addColorStop(1,'rgb(0,0,0)');
+		ctx.strokeStyle = "grad";
+		ctx.strokeWidth = 20;
+		ctx.beginPath();
+		ctx.moveTo(wWidth,arcPath.y);
+		ctx.lineTo(theLine.x,theLine.y);
+		ctx.stroke();
+		ctx.closePath();
+		
+		
+		
+        ctx.font = "50px serif";
+        ctx.fillStyle = "#000000";
+        ctx.fillText(iconHead, wWidth -400, arcPath.y);
+		
+        //ctx.font = "20px serif";
+        //ctx.fillStyle = "#000000";
+        //ctx.fillText("MouseX: " + mCoord.x + " MouseY: " + mCoord.y, arcPath.x, arcPath.y + arcPath.r + 50);
+        
+		//lineMoves = 0;
+		//theLine={x:wWidth, y: arcZero.y};
+		//lineReup = {x:0,y:0};
+        ctx.font = "20px serif";
+        ctx.fillStyle = "#000000";
+        ctx.fillText("Number of moves: " + lineMoves, arcPath.x, arcPath.y + arcPath.r + 100);
+
+        //ctx.font = "20px serif";
+        //ctx.fillStyle = "#000000";
+        //ctx.fillText("old Angle of mouse: " + old_mAngle / Math.PI * 180, arcPath.x, arcPath.y + arcPath.r + 125);
+
+        //ctx.font = "20px serif";
+        //ctx.fillStyle = "#000000";
+        //ctx.fillText("arc x Val: " + pOnArc.x + " arc y Val: " + pOnArc.y, arcPath.x, arcPath.y + arcPath.r + 200);
+
+        cvs.addEventListener('mousemove', eMouseMove, false);
+        cvs.addEventListener('mousedown', eClicked, false);
+        cvs.addEventListener('mouseup', eClacked, false);
+        cvs.addEventListener("touchstart", touchHandler, true);
+        cvs.addEventListener("touchmove", touchHandler, true);
+        cvs.addEventListener("touchend", touchHandler, true);
+        cvs.addEventListener("touchcancel", touchHandler, true);
+
+    }
+    const FRAME_RATE = 30;
+    var intervalTime = 1000 / FRAME_RATE;
+    setInterval(draw, intervalTime);
+}
+</script>
+</body>
+</HTML>

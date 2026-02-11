@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>LZ-Dial Local Media Demo - Bzzrrr.link Webwork</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols_Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2bee8c",
+                        "primary-dark": "#1fa863",
+                        "secondary": "#4A7040",
+                        "background-light": "#f5f5f5",
+                        "background-dark": "#0a0a0a",
+                        "surface-dark": "#1c2721",
+                        "surface-border": "#283930",
+                        "border-tactical": "#d1d5db",
+                        "text-main": "#141513",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "display-light": ["Public Sans", "sans-serif"],
+                        "mono": ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
+                    },
+                    backgroundImage: {
+                        'grid-pattern-dark': "linear-gradient(to right, #283930 1px, transparent 1px), linear-gradient(to bottom, #283930 1px, transparent 1px)",
+                        'grid-pattern-light': "linear-gradient(to right, #e5e7eb 1px, transparent 1px), linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)",
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: "Space Grotesk", sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .light body {
+            font-family: "Public Sans", sans-serif;
+        }
+
+        .grid-bg {
+            background-size: 40px 40px;
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: rgba(43, 238, 140, 0.1);
+            animation: scan 8s linear infinite;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .light .scan-line {
+            display: none;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 0%;
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+    </style>
+    <script src="lz-dial.js"></script>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white overflow-x-hidden min-h-screen flex flex-col font-display-light dark:font-display">
+    <div
+        class="fixed inset-0 pointer-events-none z-0 opacity-20 dark:bg-grid-pattern-dark bg-grid-pattern-light grid-bg">
+    </div>
+    <div class="scan-line"></div>
+    <div class="relative flex flex-col w-full z-10">
+        <header
+            class="sticky top-0 z-50 w-full border-b border-surface-border dark:border-surface-border border-border-tactical bg-white/80 dark:bg-background-dark/95 backdrop-blur-sm px-6 py-4">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <a href="../webwork-index.html" class="flex items-center gap-3 text-primary group cursor-pointer">
+                    <div
+                        class="relative size-8 flex items-center justify-center border border-primary/30 rounded bg-primary/10 transition-colors group-hover:bg-primary/20">
+                        <span class="material-symbols-outlined text-xl">center_focus_strong</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <h2
+                            class="dark:text-white text-text-main text-lg font-bold leading-none tracking-tight uppercase">
+                            Bzzrrr<span class="text-primary">.link</span></h2>
+                        <span class="text-[10px] text-gray-400 tracking-[0.2em] uppercase leading-none mt-1">Webwork
+                            Sys.</span>
+                    </div>
+                </a>
+                <nav class="hidden md:flex items-center gap-10">
+                    <a class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary transition-colors tracking-wide uppercase"
+                        href="../webwork-index.html">Mission</a>
+                    <a class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary transition-colors tracking-wide uppercase"
+                        href="examples.html">Arsenal</a>
+                    <a class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary transition-colors tracking-wide uppercase"
+                        href="inline-content-demo.html">Docs</a>
+                    <a class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary transition-colors tracking-wide uppercase"
+                        href="#">Intel</a>
+                </nav>
+                <div class="flex items-center gap-3">
+                    <div class="hidden lg:flex items-center mr-2">
+                        <div class="flex items-center bg-gray-100 dark:bg-surface-dark border border-border-tactical dark:border-surface-border rounded p-0.5"
+                            title="Mission Mode Selector">
+                            <button id="nightVisionBtn"
+                                class="dark:flex hidden items-center gap-1.5 px-3 py-1.5 bg-background-dark border border-primary/40 rounded shadow-[0_0_10px_rgba(43,238,140,0.15)] text-primary cursor-default">
+                                <span class="material-symbols-outlined text-sm">night_sight_auto</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest">Night Vision</span>
+                            </button>
+                            <button id="dayOpsActiveBtn"
+                                class="dark:hidden flex items-center gap-1.5 px-3 py-1.5 bg-white border border-primary/40 rounded shadow-sm text-primary cursor-default">
+                                <span class="material-symbols-outlined text-sm">light_mode</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest">Day Ops</span>
+                            </button>
+                            <button id="toggleDayOps"
+                                class="dark:flex hidden items-center gap-1.5 px-3 py-1.5 text-gray-500 hover:text-gray-300 transition-colors group">
+                                <span
+                                    class="material-symbols-outlined text-sm group-hover:text-yellow-200 transition-colors">light_mode</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest">Day Ops</span>
+                            </button>
+                            <button id="toggleNightVision"
+                                class="dark:hidden flex items-center gap-1.5 px-3 py-1.5 text-gray-500 hover:text-gray-700 transition-colors group">
+                                <span
+                                    class="material-symbols-outlined text-sm group-hover:text-primary transition-colors">dark_mode</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest">Night Vision</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div
+                        class="hidden sm:flex items-center justify-center h-9 px-3 border border-border-tactical dark:border-surface-border rounded bg-white dark:bg-surface-dark text-xs font-mono text-primary/80">
+                        <span class="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse"></span>
+                        SYS.NOMINAL
+                    </div>
+                    <div
+                        class="flex items-center justify-center h-10 px-3 bg-gray-100 dark:bg-surface-dark border border-border-tactical dark:border-surface-border text-gray-600 dark:text-gray-400 text-xs font-bold rounded font-mono">
+                        v.1.0.4
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="flex-grow flex flex-col items-center w-full">
+            <div class="w-full max-w-7xl px-6 py-12 md:py-20">
+                <div class="flex flex-col gap-8">
+                    <div class="flex flex-col gap-4">
+                        <div
+                            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/20 border border-secondary/40 w-fit">
+                            <span class="material-symbols-outlined text-primary text-sm">perm_media</span>
+                            <span class="text-xs font-bold text-primary tracking-widest uppercase">Local Media
+                                Demo</span>
+                        </div>
+                        <h1
+                            class="dark:text-white text-text-main text-4xl md:text-5xl font-black leading-tight tracking-tighter uppercase">
+                            LZ-DIAL<br />
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">LOCAL
+                                MEDIA</span>
+                        </h1>
+                        <p class="text-gray-600 dark:text-gray-300 text-lg font-normal leading-relaxed max-w-2xl">
+                            Demonstration of inline content features with local media files. Click the FAB to deploy the
+                            dial.
+                        </p>
+                    </div>
+
+                    <!-- Info Box -->
+                    <div
+                        class="rounded-lg border border-border-tactical dark:border-surface-border bg-white dark:bg-surface-dark p-6">
+                        <div
+                            class="flex items-center gap-2 text-primary font-mono text-xs tracking-widest uppercase mb-4">
+                            <span class="material-symbols-outlined text-base">info</span>
+                            Available Features
+                        </div>
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <li class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-base">music_note</span>
+                                <span><strong>Audio</strong> - Play local audio file</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-base">movie</span>
+                                <span><strong>Video</strong> - Play local video file</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-base">image</span>
+                                <span><strong>Image</strong> - View local image</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-base">mail</span>
+                                <span><strong>Email</strong> - Send email form</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-base">phone</span>
+                                <span><strong>Call</strong> - Phone dialer</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-base">home</span>
+                                <span><strong>Home</strong> - Regular navigation</span>
+                            </li>
+                        </ul>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-4"><em>Rotate the dial and click the
+                                active (highlighted) item!</em></p>
+                    </div>
+
+                    <!-- Console Log -->
+                    <div
+                        class="rounded-lg border border-border-tactical dark:border-surface-border bg-white dark:bg-surface-dark p-6">
+                        <div
+                            class="flex items-center gap-2 text-primary font-mono text-xs tracking-widest uppercase mb-4">
+                            <span class="material-symbols-outlined text-base">terminal</span>
+                            Event Log
+                        </div>
+                        <div id="console"
+                            class="bg-gray-100 dark:bg-background-dark p-4 rounded font-mono text-xs h-32 overflow-y-auto">
+                            <div class="text-gray-500">Waiting for events...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer
+            class="w-full border-t border-border-tactical dark:border-surface-border bg-white dark:bg-background-dark text-center py-12 px-6 relative z-10">
+            <div class="max-w-7xl mx-auto flex flex-col gap-8">
+                <div class="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+                    <a class="text-gray-500 hover:text-primary transition-colors text-sm uppercase tracking-wider"
+                        href="#">Privacy Protocol</a>
+                    <a class="text-gray-500 hover:text-primary transition-colors text-sm uppercase tracking-wider"
+                        href="#">Terms of Engagement</a>
+                    <a class="text-gray-500 hover:text-primary transition-colors text-sm uppercase tracking-wider flex items-center gap-2"
+                        href="#">
+                        <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                        System Status
+                    </a>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <p class="text-gray-600 text-xs font-mono uppercase">
+                        © 2023 Bzzrrr.link Webwork. All systems nominal.
+                    </p>
+                    <p class="text-[10px] text-gray-700 dark:text-gray-700 font-mono">
+                        SECURE CONNECTION ESTABLISHED // ENCRYPTION: AES-256
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- The Component -->
+    <lz-dial radius="140" justify="left">
+        <div slot="trigger-content" style="font-size:24px;">+</div>
+
+        <lz-item label="Audio" icon="https://api.iconify.design/mdi:music.svg?color=%23ffffff"
+            data-audio="media/feb7_2006_N_trafx_Show.mp3"></lz-item>
+
+        <lz-item label="Video" icon="https://api.iconify.design/mdi:video.svg?color=%23ffffff"
+            data-video="media/paperchasers2.mp4"></lz-item>
+
+        <lz-item label="Image" icon="media/qrillienlogo.png" data-image="media/qrillienlogo.png"></lz-item>
+
+        <lz-item label="Email" icon="https://api.iconify.design/mdi:email.svg?color=%23ffffff"
+            data-email="contact@lawnczar.com"></lz-item>
+
+        <lz-item label="Call" icon="https://api.iconify.design/mdi:phone.svg?color=%23ffffff"
+            data-phone="+1-555-LAWN-CZAR"></lz-item>
+
+        <lz-item label="Home" icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff" href="#home"></lz-item>
+        <lz-item label="Settings" icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff" href="#settings">
+        </lz-item>
+
+    </lz-dial>
+
+    <script type="module">
+        // IPFS Logic removed to use local media directly
+        // import { getIpfsUrl } from './ipfs-config.js';
+
+        const dial = document.querySelector('lz-dial');
+        const logger = document.getElementById('console');
+
+        dial.addEventListener('lz-change', (e) => {
+            const label = e.detail.item.getAttribute('label');
+            const p = document.createElement('div');
+            p.textContent = `> Active: ${label}`;
+            p.className = 'text-primary';
+            logger.prepend(p);
+        });
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        const html = document.documentElement;
+        const toggleDayOps = document.getElementById('toggleDayOps');
+        const toggleNightVision = document.getElementById('toggleNightVision');
+
+        const savedTheme = localStorage.getItem('webwork-theme') || 'dark';
+        if (savedTheme === 'light') {
+            html.classList.remove('dark');
+            html.classList.add('light');
+        } else {
+            html.classList.remove('light');
+            html.classList.add('dark');
+        }
+
+        toggleDayOps.addEventListener('click', () => {
+            html.classList.remove('dark');
+            html.classList.add('light');
+            localStorage.setItem('webwork-theme', 'light');
+        });
+
+        toggleNightVision.addEventListener('click', () => {
+            html.classList.remove('light');
+            html.classList.add('dark');
+            localStorage.setItem('webwork-theme', 'dark');
+        });
+    </script>
+
+</body>
+
+</html>
