@@ -702,17 +702,23 @@ class BzrDialMenu extends HTMLElement {
                     dragState.locked = true;
                     this.isDragging = false; // Stop physics drag
 
-                    let direction = dy > 0 ? 1 : -1;
-
-                    // Default position is right (justify is null/undefined).
-                    // Only left-justified dials should NOT invert.
-                    const isRight = this.getAttribute('justify') !== 'left';
-                    if (isRight) {
-                        direction = dy > 0 ? -1 : 1;
-                    }
+                    // Drag down (dy > 0) → decrease rotation by one slot.
+                    // For right dials: items above have higher baseAngles (225°, 270°),
+                    //   so negative rotation brings them down to the perpendicular (180°).
+                    // For left dials: mirroring in positionItems means the same direction works.
+                    let direction = dy > 0 ? -1 : 1;
 
                     let currentSlot = Math.round(this.rotation / this.snapAngle);
-                    this.targetRotation = (currentSlot + direction) * this.snapAngle;
+                    let targetSlot = currentSlot + direction;
+
+                    // Clamp to valid item range: slots -(count-1)..0
+                    // At slot 0, item 0 is at the perpendicular.
+                    // At slot -(count-1), the last item is at the perpendicular.
+                    const maxSlot = this.items.length - 1;
+                    if (targetSlot > 0) targetSlot = 0;
+                    if (targetSlot < -maxSlot) targetSlot = -maxSlot;
+
+                    this.targetRotation = targetSlot * this.snapAngle;
                     return;
                 }
             }
@@ -731,16 +737,14 @@ class BzrDialMenu extends HTMLElement {
             if (delta > Math.PI) delta -= Math.PI * 2;
             if (delta < -Math.PI) delta += Math.PI * 2;
 
-            // In standard radial math (atan2), positive delta is Clockwise.
-            // When Right Justified, we WANT standard behavior because dragging "Down" on the left side (where icons are) 
-            // naturally produces a positive delta (CW) relative to the center on the right.
-            // However, the user reports dragging "Down" moves the dial "Clockwise" which they say is wrong.
-            // They want "Down" -> "Counter-Clockwise".
-            // So we NEED to invert it if it is behaving Clockwise.
-
-            // Free-spin uses atan2 relative to FAB center, which already produces
-            // the correct direction for right-side dials (dragging down = negative delta = CCW).
-            // No inversion needed here — only the icon-lock snap path needs it.
+            // Free-spin uses atan2 relative to FAB center.
+            // For right-side dials, the math naturally produces correct direction.
+            // For left-side dials, positionItems() mirrors with angle = -angle,
+            // so we negate delta to match the visual direction.
+            const isLeft = this.getAttribute('justify') === 'left';
+            if (isLeft) {
+                delta = -delta;
+            }
 
             this.rotation += delta;
             this.velocity = delta; // Simple velocity tracking
@@ -1424,6 +1428,12 @@ class BzrDialMenu extends HTMLElement {
             // Find nearest slot
             if (Math.abs(this.velocity) < 0.01) {
                 let slot = Math.round(this.rotation / this.snapAngle);
+
+                // Clamp to valid item range: slots -(count-1)..0
+                const maxSlot = this.items.length - 1;
+                if (slot > 0) slot = 0;
+                if (slot < -maxSlot) slot = -maxSlot;
+
                 let target = slot * this.snapAngle;
                 let diff = target - this.rotation;
 
