@@ -69,4 +69,11 @@ describe('BzrDialMenu - Audio Player', () => {
     // Assert the width is calculated correctly
     expect(progressBar.style.width).toBe('25%');
   });
+
+  it('should set autoplay on audio element when data-autoplay is present', () => {
+    audioItem.setAttribute('data-autoplay', '');
+    dialMenu.showContent(audioItem);
+    const audioEl = dialMenu.shadowRoot.querySelector('audio');
+    expect(audioEl.autoplay).toBe(true);
+  });
 });
