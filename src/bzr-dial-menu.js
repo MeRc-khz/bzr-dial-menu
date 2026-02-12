@@ -1129,9 +1129,10 @@ class BzrDialMenu extends HTMLElement {
         controls.appendChild(progressContainer);
         controls.appendChild(timeDisplay);
 
-        container.appendChild(controls); // Append to parent (contentBody usually)
+        container.appendChild(controls);
 
-        // Logic
+        // --- Refactored Event Handlers ---
+
         const togglePlay = () => {
             if (mediaElement.paused) {
                 mediaElement.play();
@@ -1142,10 +1143,6 @@ class BzrDialMenu extends HTMLElement {
             }
         };
 
-        playBtn.onclick = togglePlay;
-        mediaElement.addEventListener('click', togglePlay); // Click video/canvas to toggle
-
-        // Progress Update
         const formatTime = (s) => {
             if (isNaN(s)) return '0:00';
             const m = Math.floor(s / 60);
@@ -1153,36 +1150,52 @@ class BzrDialMenu extends HTMLElement {
             return `${m}:${sec}`;
         };
 
-        mediaElement.addEventListener('timeupdate', () => {
+        const onTimeUpdate = () => {
             const pct = (mediaElement.currentTime / mediaElement.duration) * 100;
             progressBar.style.width = `${pct}%`;
             timeDisplay.textContent = `${formatTime(mediaElement.currentTime)} / ${formatTime(mediaElement.duration)}`;
-        });
+        };
 
-        mediaElement.addEventListener('ended', () => {
+        const onEnded = () => {
             playBtn.innerHTML = '▶';
-        });
+        };
 
-        // Seek
-        progressContainer.addEventListener('click', (e) => {
+        const onSeek = (e) => {
             const rect = progressContainer.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             const pct = clickX / rect.width;
             mediaElement.currentTime = pct * mediaElement.duration;
-        });
+        };
 
-        // Opacity Logic: Fade out controls when idle
         let idleTimer;
-        container.addEventListener('mousemove', () => {
+        const onActivity = () => {
             controls.style.opacity = '1';
             clearTimeout(idleTimer);
             idleTimer = setTimeout(() => {
                 if (!mediaElement.paused) controls.style.opacity = '0';
             }, 3000);
-        });
+        };
+
+        // Attach listeners
+        playBtn.onclick = togglePlay;
+        mediaElement.addEventListener('click', togglePlay);
+        mediaElement.addEventListener('timeupdate', onTimeUpdate);
+        mediaElement.addEventListener('ended', onEnded);
+        progressContainer.addEventListener('click', onSeek);
+        container.addEventListener('mousemove', onActivity);
+        onActivity(); // Show controls initially
     }
 
     createAudioVisualizer(audioSrc, autoplay = false) {
+        // --- Refactored Constants ---
+        const VISUALIZER_RADIUS_SCALE = 0.4;
+        const VISUALIZER_BAR_WIDTH = 4;
+        const VISUALIZER_BAR_COUNT = 120;
+        const VISUALIZER_DATA_SCALE = 0.7;
+        const VISUALIZER_HEIGHT_SCALE = 0.5;
+        const HSL_HUE_START = 120;
+        const HSL_HUE_RANGE = 60;
+
         // Create full screen canvas
         const canvas = document.createElement('canvas');
         canvas.style.position = 'absolute';
@@ -1205,7 +1218,7 @@ class BzrDialMenu extends HTMLElement {
         const audio = document.createElement('audio');
         audio.src = audioSrc;
         audio.style.display = 'none';
-        audio.crossOrigin = 'anonymous'; // Helper for some servers
+        audio.crossOrigin = 'anonymous';
         if (autoplay) audio.autoplay = true;
         this.els.contentBody.appendChild(audio);
 
@@ -1213,7 +1226,6 @@ class BzrDialMenu extends HTMLElement {
         this.createMediaControls(audio, this.els.contentBody);
 
         // Web Audio Initialization
-        // Must be resumed on user gesture. Since we are in a click handler context, this should work.
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         this.audioCtx = new AudioContext();
 
@@ -1233,14 +1245,12 @@ class BzrDialMenu extends HTMLElement {
 
             analyser.getByteFrequencyData(dataArray);
 
-            // Draw Background
             ctx.fillStyle = '#111';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Circular Visualizer
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
-            const radius = Math.min(cx, cy) * 0.4;
+            const radius = Math.min(cx, cy) * VISUALIZER_RADIUS_SCALE;
 
             ctx.beginPath();
             ctx.arc(cx, cy, radius, 0, Math.PI * 2);
@@ -1248,27 +1258,21 @@ class BzrDialMenu extends HTMLElement {
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            // Bars
-            const barWidth = 4;
-            const count = 120; // Number of bars around circle
-            const step = (Math.PI * 2) / count;
+            const step = (Math.PI * 2) / VISUALIZER_BAR_COUNT;
 
-            for (let i = 0; i < count; i++) {
-                // Map i to index in frequency data (focus on lower/mids)
-                const dataIndex = Math.floor((i / count) * (bufferLength * 0.7));
+            for (let i = 0; i < VISUALIZER_BAR_COUNT; i++) {
+                const dataIndex = Math.floor((i / VISUALIZER_BAR_COUNT) * (bufferLength * VISUALIZER_DATA_SCALE));
                 const value = dataArray[dataIndex];
                 const percent = value / 255;
-                const height = percent * (Math.min(cx, cy) * 0.5);
-
+                const height = percent * (Math.min(cx, cy) * VISUALIZER_HEIGHT_SCALE);
                 const angle = i * step - Math.PI / 2;
-
                 const x1 = cx + Math.cos(angle) * radius;
                 const y1 = cy + Math.sin(angle) * radius;
                 const x2 = cx + Math.cos(angle) * (radius + height);
                 const y2 = cy + Math.sin(angle) * (radius + height);
 
-                ctx.strokeStyle = `hsl(${120 + percent * 60}, 100%, 50%)`; // Green to Cyan
-                ctx.lineWidth = barWidth;
+                ctx.strokeStyle = `hsl(${HSL_HUE_START + percent * HSL_HUE_RANGE}, 100%, 50%)`;
+                ctx.lineWidth = VISUALIZER_BAR_WIDTH;
                 ctx.beginPath();
                 ctx.moveTo(x1, y1);
                 ctx.lineTo(x2, y2);
@@ -1276,7 +1280,6 @@ class BzrDialMenu extends HTMLElement {
             }
         };
 
-        // Ensure context is running (browser policy)
         audio.onplay = () => {
             if (this.audioCtx.state === 'suspended') {
                 this.audioCtx.resume();
@@ -1285,8 +1288,7 @@ class BzrDialMenu extends HTMLElement {
         };
 
         if (autoplay) {
-            // Try to start immediately if trusted
-            // But usually wait for onplay
+            // Autoplay will trigger the onplay event
         }
     }
 
