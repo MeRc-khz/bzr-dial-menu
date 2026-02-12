@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bzr-Dial-Menu - Audio Demo</title>
+    <script type="module" src="/src/bzr-dial-menu.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 2em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #111;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bzr-Dial-Menu - Audio Demo</h1>
+
+    <p>Click the menu, then click the "Podcast" item to test the inline audio player.</p>
+    
+    <bzr-dial-menu>
+        <!-- 
+            NOTE: "episode.mp3" is a placeholder. 
+            Please replace it with a valid audio file URL to test the functionality.
+        -->
+        <bzr-item 
+            label="Podcast" 
+            icon="https://api.iconify.design/mdi:podcast.svg?color=%23ffffff"
+            data-audio="episode.mp3"
+            data-autoplay>
+        </bzr-item>
+        <bzr-item 
+            label="Settings" 
+            icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff">
+        </bzr-item>
+        <bzr-item 
+            label="Profile" 
+            icon="https://api.iconify.design/mdi:account.svg?color=%23ffffff">
+        </bzr-item>
+    </bzr-dial-menu>
+
+</body>
+</html>
