@@ -8,7 +8,7 @@
 - [x] Task: Refactor the audio player code for clarity and performance. (a7f4e64)
 - [x] Task: Write failing end-to-end tests for the `data-autoplay` attribute for audio. (765352e)
 - [x] Task: Implement the `data-autoplay` functionality for audio. (765352e)
-- [~] Task: Create a new HTML example file (`audio-demo.html`) to manually test the audio functionality.
+- [x] Task: Create a new HTML example file (`audio-demo.html`) to manually test the audio functionality. (fd51d44)
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Audio Content Implementation' (Protocol in workflow.md)
 
 ## Phase 2: Video Content Implementation [checkpoint: ]
