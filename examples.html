@@ -240,67 +240,37 @@
 
                     <!-- Examples Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                        <!-- Example 1: Default -->
+                        <!-- Example 1: Media Showcase -->
                         <div
-                            class="group rounded-lg border border-border-tactical dark:border-surface-border bg-white dark:bg-surface-dark p-6 hover:border-primary/50 transition-all">
+                            class="group rounded-lg border border-border-tactical dark:border-surface-border bg-white dark:bg-surface-dark p-6 hover:border-primary/50 transition-all lg:col-span-2">
                             <h3 class="text-primary text-lg font-bold uppercase mb-2 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-base">radio_button_checked</span>
-                                1. Default Config
+                                <span class="material-symbols-outlined text-base">play_circle</span>
+                                1. Media Showcase
                             </h3>
-                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Basic setup with default settings.
-                                FAB centered, standard radius.</p>
-                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;bzr-dial-menu&gt;
-  &lt;bzr-item label="Home" 
-    icon="..." href="#"&gt;
-  &lt;/bzr-item&gt;
-  &lt;bzr-item label="Settings" 
-    icon="..." href="#"&gt;
-  &lt;/bzr-item&gt;
-&lt;/bzr-dial-menu&gt;</code></pre>
-                            <div
-                                class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <bzr-dial-menu>
-                                    <bzr-item label="Home" icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff"
-                                        href="#home"></bzr-item>
-                                    <bzr-item label="Settings"
-                                        icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff" href="#settings">
-                                    </bzr-item>
-                                    <bzr-item label="Profile"
-                                        icon="https://api.iconify.design/mdi:account.svg?color=%23ffffff"
-                                        href="#profile"></bzr-item>
-                                </bzr-dial-menu>
-                            </div>
-                        </div>
-
-                        <!-- Example 2: Left Justified -->
-                        <div
-                            class="group rounded-lg border border-border-tactical dark:border-surface-border bg-white dark:bg-surface-dark p-6 hover:border-primary/50 transition-all">
-                            <h3 class="text-primary text-lg font-bold uppercase mb-2 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-base">align_horizontal_left</span>
-                                2. Left Justified
-                            </h3>
-                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">FAB positioned on the left edge.
-                                Great for right-handed users.</p>
-                            <div class="flex gap-2 mb-4">
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Full media integration — audio,
+                                video, image, email, and phone. Click each item to see inline content overlays.</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
                                 <span
-                                    class="inline-block bg-primary/10 border border-primary/30 text-primary px-2 py-0.5 rounded text-xs font-mono">justify="left"</span>
+                                    class="inline-block bg-primary/10 border border-primary/30 text-primary px-2 py-0.5 rounded text-xs font-mono">data-audio</span>
+                                <span
+                                    class="inline-block bg-primary/10 border border-primary/30 text-primary px-2 py-0.5 rounded text-xs font-mono">data-video</span>
+                                <span
+                                    class="inline-block bg-primary/10 border border-primary/30 text-primary px-2 py-0.5 rounded text-xs font-mono">data-image</span>
+                                <span
+                                    class="inline-block bg-primary/10 border border-primary/30 text-primary px-2 py-0.5 rounded text-xs font-mono">data-email</span>
+                                <span
+                                    class="inline-block bg-primary/10 border border-primary/30 text-primary px-2 py-0.5 rounded text-xs font-mono">data-phone</span>
                             </div>
-                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;bzr-dial-menu justify="left"&gt;
-  &lt;!-- items --&gt;
+                            <pre class="bg-gray-100 dark:bg-background-dark p-3 rounded text-xs overflow-x-auto mb-4"><code class="text-gray-600 dark:text-gray-300">&lt;bzr-dial-menu&gt;
+  &lt;bzr-item label="Music" icon="..." data-audio="media/file.mp3"&gt;&lt;/bzr-item&gt;
+  &lt;bzr-item label="Video" icon="..." data-video="media/file.mp4"&gt;&lt;/bzr-item&gt;
+  &lt;bzr-item label="Image" icon="..." data-image="media/file.png"&gt;&lt;/bzr-item&gt;
+  &lt;bzr-item label="Email" icon="..." data-email="user@example.com"&gt;&lt;/bzr-item&gt;
+  &lt;bzr-item label="Call"  icon="..." data-phone="+15551234567"&gt;&lt;/bzr-item&gt;
 &lt;/bzr-dial-menu&gt;</code></pre>
                             <div
-                                class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <bzr-dial-menu justify="left">
-                                    <bzr-item label="Home"
-                                        icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff">
-                                    </bzr-item>
-                                    <bzr-item label="Search"
-                                        icon="https://api.iconify.design/mdi:magnify.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Favorites"
-                                        icon="https://api.iconify.design/mdi:heart.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Settings"
-                                        icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff"></bzr-item>
-                                </bzr-dial-menu>
+                                class="min-h-[200px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
+                                <p class="text-gray-500 text-sm">See Example 9 below for a working demo</p>
                             </div>
                         </div>
 
@@ -322,18 +292,7 @@
 &lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <bzr-dial-menu justify="right">
-                                    <bzr-item label="Dashboard"
-                                        icon="https://api.iconify.design/mdi:view-dashboard.svg?color=%23ffffff">
-                                    </bzr-item>
-                                    <bzr-item label="Analytics"
-                                        icon="https://api.iconify.design/mdi:chart-line.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Reports"
-                                        icon="https://api.iconify.design/mdi:file-document.svg?color=%23ffffff">
-                                    </bzr-item>
-                                    <bzr-item label="Settings"
-                                        icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff"></bzr-item>
-                                </bzr-dial-menu>
+                                <p class="text-gray-500 text-sm">See Example 9 below for a working demo</p>
                             </div>
                         </div>
 
@@ -355,14 +314,7 @@
 &lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <bzr-dial-menu radius="180">
-                                    <bzr-item label="Create"
-                                        icon="https://api.iconify.design/mdi:plus-circle.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Edit"
-                                        icon="https://api.iconify.design/mdi:pencil.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Delete"
-                                        icon="https://api.iconify.design/mdi:delete.svg?color=%23ffffff"></bzr-item>
-                                </bzr-dial-menu>
+                                <p class="text-gray-500 text-sm">See Example 9 below for a working demo</p>
                             </div>
                         </div>
 
@@ -387,16 +339,7 @@
 &lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <bzr-dial-menu>
-                                    <div slot="trigger-content" style="font-size:32px;">☰</div>
-                                    <bzr-item label="Home"
-                                        icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff">
-                                    </bzr-item>
-                                    <bzr-item label="About"
-                                        icon="https://api.iconify.design/mdi:information.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Contact"
-                                        icon="https://api.iconify.design/mdi:email.svg?color=%23ffffff"></bzr-item>
-                                </bzr-dial-menu>
+                                <p class="text-gray-500 text-sm">See Example 9 below for a working demo</p>
                             </div>
                         </div>
 
@@ -426,16 +369,7 @@
 &lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <bzr-dial-menu id="red-theme">
-                                    <bzr-item label="Alert"
-                                        icon="https://api.iconify.design/mdi:alert.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Warning"
-                                        icon="https://api.iconify.design/mdi:alert-circle.svg?color=%23ffffff">
-                                    </bzr-item>
-                                    <bzr-item label="Error"
-                                        icon="https://api.iconify.design/mdi:close-circle.svg?color=%23ffffff">
-                                    </bzr-item>
-                                </bzr-dial-menu>
+                                <p class="text-gray-500 text-sm">See Example 9 below for a working demo</p>
                             </div>
                         </div>
 
@@ -465,14 +399,7 @@
 &lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <bzr-dial-menu id="blue-theme">
-                                    <bzr-item label="Messages"
-                                        icon="https://api.iconify.design/mdi:message.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Calls"
-                                        icon="https://api.iconify.design/mdi:phone.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Video"
-                                        icon="https://api.iconify.design/mdi:video.svg?color=%23ffffff"></bzr-item>
-                                </bzr-dial-menu>
+                                <p class="text-gray-500 text-sm">See Example 9 below for a working demo</p>
                             </div>
                         </div>
 
@@ -502,15 +429,7 @@
 &lt;/bzr-dial-menu&gt;</code></pre>
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
-                                <bzr-dial-menu id="purple-theme">
-                                    <bzr-item label="Design"
-                                        icon="https://api.iconify.design/mdi:palette.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Art"
-                                        icon="https://api.iconify.design/mdi:brush.svg?color=%23ffffff">
-                                    </bzr-item>
-                                    <bzr-item label="Music"
-                                        icon="https://api.iconify.design/mdi:music.svg?color=%23ffffff"></bzr-item>
-                                </bzr-dial-menu>
+                                <p class="text-gray-500 text-sm">See Example 9 below for a working demo</p>
                             </div>
                         </div>
 
@@ -529,23 +448,30 @@
                             <div
                                 class="min-h-[150px] flex items-center justify-center bg-gray-50 dark:bg-background-dark/50 rounded p-4">
                                 <bzr-dial-menu radius="150">
+                                    <bzr-item label="Music"
+                                        icon="https://api.iconify.design/mdi:music-circle.svg?color=%23ffffff"
+                                        data-audio="media/feb7_2006_N_trafx_Show.mp3"></bzr-item>
+                                    <bzr-item label="Video"
+                                        icon="https://api.iconify.design/mdi:video.svg?color=%23ffffff"
+                                        data-video="media/paperchasers2.mp4"></bzr-item>
+                                    <bzr-item label="Gallery"
+                                        icon="https://api.iconify.design/mdi:image.svg?color=%23ffffff"
+                                        data-image="media/qrillienlogo.png"></bzr-item>
+                                    <bzr-item label="Email"
+                                        icon="https://api.iconify.design/mdi:email.svg?color=%23ffffff"
+                                        data-email="hello@bzzrrr.link"></bzr-item>
+                                    <bzr-item label="Call"
+                                        icon="https://api.iconify.design/mdi:phone.svg?color=%23ffffff"
+                                        data-phone="+15551234567"></bzr-item>
                                     <bzr-item label="Home"
-                                        icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff">
-                                    </bzr-item>
-                                    <bzr-item label="Search"
-                                        icon="https://api.iconify.design/mdi:magnify.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Favorites"
-                                        icon="https://api.iconify.design/mdi:heart.svg?color=%23ffffff"></bzr-item>
+                                        icon="https://api.iconify.design/mdi:home.svg?color=%23ffffff"
+                                        href="#home"></bzr-item>
                                     <bzr-item label="Settings"
-                                        icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Profile"
-                                        icon="https://api.iconify.design/mdi:account.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Messages"
-                                        icon="https://api.iconify.design/mdi:message.svg?color=%23ffffff"></bzr-item>
-                                    <bzr-item label="Notifications"
-                                        icon="https://api.iconify.design/mdi:bell.svg?color=%23ffffff"></bzr-item>
+                                        icon="https://api.iconify.design/mdi:cog.svg?color=%23ffffff"
+                                        href="#settings"></bzr-item>
                                     <bzr-item label="Help"
-                                        icon="https://api.iconify.design/mdi:help-circle.svg?color=%23ffffff"></bzr-item>
+                                        icon="https://api.iconify.design/mdi:help-circle.svg?color=%23ffffff"
+                                        href="#help"></bzr-item>
                                 </bzr-dial-menu>
                             </div>
                         </div>

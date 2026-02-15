@@ -42,6 +42,7 @@ class BzrDialMenu extends HTMLElement {
     connectedCallback() {
         this.render();
         this.setupEvents();
+
         this.updateItems();
         this.updatePosition(); // Ensure position is set on connect
 
@@ -53,7 +54,6 @@ class BzrDialMenu extends HTMLElement {
             if (this.isDragging || this.isSliding) return;
 
             // If closed, open it if we clicked the host (fallback/primary for docked)
-            // We check if we are NOT open to avoid conflicting with closing logic (which might be usually handled by overlay)
             if (!this.isOpen) {
                 console.log(' Opening via Host Click');
                 this.toggle();
@@ -109,7 +109,7 @@ class BzrDialMenu extends HTMLElement {
                 height: 100%;
                 top: 0;
                 right: 0;
-                left: 0;
+                left: 0 !important; /* Override justify positioning */
                 transform: none;
                 pointer-events: none; /* Let clicks pass to overlay/trigger */
             }
@@ -278,6 +278,17 @@ class BzrDialMenu extends HTMLElement {
                 transform: scale(1.2);
                 color: var(--primary);
                 text-shadow: 0 0 10px var(--primary);
+            }
+
+            /* Exit item - always red tinted */
+            ::slotted(bzr-item[data-exit]) {
+                opacity: 0.6;
+                transition: opacity 0.2s;
+            }
+            ::slotted(bzr-item[data-exit][active]) {
+                opacity: 1;
+                color: #ff4444;
+                text-shadow: 0 0 10px #ff4444;
             }
 
             /* Content Overlay Modal */
@@ -558,13 +569,46 @@ class BzrDialMenu extends HTMLElement {
     }
 
     setupEvents() {
-        // Trigger Click handled by Host listener now for robust open
-        // We keep this for double-click logic if needed, but for now let's simplify to avoid race conditions.
-        /* this.els.trigger.addEventListener('click', ... removed duplicate toggle ... */
+        // Click delay timer to distinguish single vs double click
+        this._clickTimer = null;
 
-        // Double click logic should probably be on Host too if needed, but let's stick to simple open first.
+        // Trigger click handler - toggles menu and closes content overlay
+        this.els.trigger.addEventListener('click', (e) => {
+            // If dragging or sliding, ignore
+            if (this.isDragging || this.isSliding) return;
+
+            // Clear any pending click timer
+            clearTimeout(this._clickTimer);
+
+            // Capture the current state at click time
+            const wasOpen = this.isOpen;
+
+            // Delay the click action to see if a double-click is coming
+            this._clickTimer = setTimeout(() => {
+                // If was open when clicked, close both the menu and any content overlay
+                if (wasOpen) {
+                    this.hideContent();
+                    this.toggle();
+                }
+                // If was closed, the event already bubbled to host listener which opened it
+            }, 250); // 250ms delay to detect double-click
+        });
+
+        // Double click to enable slide mode
         this.els.trigger.addEventListener('dblclick', (e) => {
             e.stopPropagation();
+            e.preventDefault();
+
+            // Cancel the pending single-click action
+            clearTimeout(this._clickTimer);
+
+            // Close the menu if it's open (from the first click)
+            if (this.isOpen) {
+                this.hideContent();
+                this.toggle();
+            }
+
+            // Toggle slide mode
             this.slideEnabled = !this.slideEnabled;
             if (this.slideEnabled) {
                 this.setAttribute('slide-enabled', '');
@@ -683,10 +727,14 @@ class BzrDialMenu extends HTMLElement {
                 if (newTop < minTop) newTop = minTop;
                 if (newTop > maxTop) newTop = maxTop;
 
+                // Clear transform to avoid translateY offset issues
+                this.style.transform = 'none';
                 this.style.top = `${newTop}px`;
 
-                // Sync Container Center (Host Top + Radius)
-                this.els.container.style.top = `${newTop + 40}px`;
+                // Move the dial container with the FAB
+                if (this.isOpen) {
+                    this.els.container.style.top = `${newTop + 40}px`; // FAB center offset
+                }
 
                 return; // Stop other interactions
             }
@@ -756,6 +804,16 @@ class BzrDialMenu extends HTMLElement {
 
         const end = () => {
             clearTimeout(this.longPressTimer);
+
+            // If we were sliding, persist the new position
+            if (this.isSliding && this.hasMoved) {
+                const currentTop = this.style.top;
+                if (currentTop) {
+                    // Store the position as an attribute so it persists
+                    this.setAttribute('top', currentTop);
+                }
+            }
+
             if (!this.hasMoved && this.clickedIcon && !this.isSliding) {
                 // Handle Click - Check for inline content first, then href
                 if (this.clickedIcon.hasAttribute('active')) {
@@ -788,6 +846,17 @@ class BzrDialMenu extends HTMLElement {
 
         window.addEventListener('mouseup', end);
         window.addEventListener('touchend', end);
+
+        // Click anywhere to exit slide mode
+        this.els.overlay.addEventListener('click', (e) => {
+            // Only handle clicks when in slide mode and menu is not open
+            if (this.slideEnabled && !this.isOpen && !this.isDragging) {
+                // Exit slide mode
+                this.slideEnabled = false;
+                this.removeAttribute('slide-enabled');
+                if (navigator.vibrate) navigator.vibrate(50);
+            }
+        });
     }
 
     updateItems() {
@@ -1129,10 +1198,9 @@ class BzrDialMenu extends HTMLElement {
         controls.appendChild(progressContainer);
         controls.appendChild(timeDisplay);
 
-        container.appendChild(controls);
+        container.appendChild(controls); // Append to parent (contentBody usually)
 
-        // --- Refactored Event Handlers ---
-
+        // Logic
         const togglePlay = () => {
             if (mediaElement.paused) {
                 mediaElement.play();
@@ -1143,6 +1211,10 @@ class BzrDialMenu extends HTMLElement {
             }
         };
 
+        playBtn.onclick = togglePlay;
+        mediaElement.addEventListener('click', togglePlay); // Click video/canvas to toggle
+
+        // Progress Update
         const formatTime = (s) => {
             if (isNaN(s)) return '0:00';
             const m = Math.floor(s / 60);
@@ -1150,52 +1222,36 @@ class BzrDialMenu extends HTMLElement {
             return `${m}:${sec}`;
         };
 
-        const onTimeUpdate = () => {
+        mediaElement.addEventListener('timeupdate', () => {
             const pct = (mediaElement.currentTime / mediaElement.duration) * 100;
             progressBar.style.width = `${pct}%`;
             timeDisplay.textContent = `${formatTime(mediaElement.currentTime)} / ${formatTime(mediaElement.duration)}`;
-        };
+        });
 
-        const onEnded = () => {
+        mediaElement.addEventListener('ended', () => {
             playBtn.innerHTML = '▶';
-        };
+        });
 
-        const onSeek = (e) => {
+        // Seek
+        progressContainer.addEventListener('click', (e) => {
             const rect = progressContainer.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             const pct = clickX / rect.width;
             mediaElement.currentTime = pct * mediaElement.duration;
-        };
+        });
 
+        // Opacity Logic: Fade out controls when idle
         let idleTimer;
-        const onActivity = () => {
+        container.addEventListener('mousemove', () => {
             controls.style.opacity = '1';
             clearTimeout(idleTimer);
             idleTimer = setTimeout(() => {
                 if (!mediaElement.paused) controls.style.opacity = '0';
             }, 3000);
-        };
-
-        // Attach listeners
-        playBtn.onclick = togglePlay;
-        mediaElement.addEventListener('click', togglePlay);
-        mediaElement.addEventListener('timeupdate', onTimeUpdate);
-        mediaElement.addEventListener('ended', onEnded);
-        progressContainer.addEventListener('click', onSeek);
-        container.addEventListener('mousemove', onActivity);
-        onActivity(); // Show controls initially
+        });
     }
 
     createAudioVisualizer(audioSrc, autoplay = false) {
-        // --- Refactored Constants ---
-        const VISUALIZER_RADIUS_SCALE = 0.4;
-        const VISUALIZER_BAR_WIDTH = 4;
-        const VISUALIZER_BAR_COUNT = 120;
-        const VISUALIZER_DATA_SCALE = 0.7;
-        const VISUALIZER_HEIGHT_SCALE = 0.5;
-        const HSL_HUE_START = 120;
-        const HSL_HUE_RANGE = 60;
-
         // Create full screen canvas
         const canvas = document.createElement('canvas');
         canvas.style.position = 'absolute';
@@ -1218,7 +1274,7 @@ class BzrDialMenu extends HTMLElement {
         const audio = document.createElement('audio');
         audio.src = audioSrc;
         audio.style.display = 'none';
-        audio.crossOrigin = 'anonymous';
+        audio.crossOrigin = 'anonymous'; // Helper for some servers
         if (autoplay) audio.autoplay = true;
         this.els.contentBody.appendChild(audio);
 
@@ -1226,6 +1282,7 @@ class BzrDialMenu extends HTMLElement {
         this.createMediaControls(audio, this.els.contentBody);
 
         // Web Audio Initialization
+        // Must be resumed on user gesture. Since we are in a click handler context, this should work.
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         this.audioCtx = new AudioContext();
 
@@ -1245,12 +1302,14 @@ class BzrDialMenu extends HTMLElement {
 
             analyser.getByteFrequencyData(dataArray);
 
+            // Draw Background
             ctx.fillStyle = '#111';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            // Circular Visualizer
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
-            const radius = Math.min(cx, cy) * VISUALIZER_RADIUS_SCALE;
+            const radius = Math.min(cx, cy) * 0.4;
 
             ctx.beginPath();
             ctx.arc(cx, cy, radius, 0, Math.PI * 2);
@@ -1258,21 +1317,27 @@ class BzrDialMenu extends HTMLElement {
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            const step = (Math.PI * 2) / VISUALIZER_BAR_COUNT;
+            // Bars
+            const barWidth = 4;
+            const count = 120; // Number of bars around circle
+            const step = (Math.PI * 2) / count;
 
-            for (let i = 0; i < VISUALIZER_BAR_COUNT; i++) {
-                const dataIndex = Math.floor((i / VISUALIZER_BAR_COUNT) * (bufferLength * VISUALIZER_DATA_SCALE));
+            for (let i = 0; i < count; i++) {
+                // Map i to index in frequency data (focus on lower/mids)
+                const dataIndex = Math.floor((i / count) * (bufferLength * 0.7));
                 const value = dataArray[dataIndex];
                 const percent = value / 255;
-                const height = percent * (Math.min(cx, cy) * VISUALIZER_HEIGHT_SCALE);
+                const height = percent * (Math.min(cx, cy) * 0.5);
+
                 const angle = i * step - Math.PI / 2;
+
                 const x1 = cx + Math.cos(angle) * radius;
                 const y1 = cy + Math.sin(angle) * radius;
                 const x2 = cx + Math.cos(angle) * (radius + height);
                 const y2 = cy + Math.sin(angle) * (radius + height);
 
-                ctx.strokeStyle = `hsl(${HSL_HUE_START + percent * HSL_HUE_RANGE}, 100%, 50%)`;
-                ctx.lineWidth = VISUALIZER_BAR_WIDTH;
+                ctx.strokeStyle = `hsl(${120 + percent * 60}, 100%, 50%)`; // Green to Cyan
+                ctx.lineWidth = barWidth;
                 ctx.beginPath();
                 ctx.moveTo(x1, y1);
                 ctx.lineTo(x2, y2);
@@ -1280,6 +1345,7 @@ class BzrDialMenu extends HTMLElement {
             }
         };
 
+        // Ensure context is running (browser policy)
         audio.onplay = () => {
             if (this.audioCtx.state === 'suspended') {
                 this.audioCtx.resume();
@@ -1288,7 +1354,8 @@ class BzrDialMenu extends HTMLElement {
         };
 
         if (autoplay) {
-            // Autoplay will trigger the onplay event
+            // Try to start immediately if trusted
+            // But usually wait for onplay
         }
     }
 

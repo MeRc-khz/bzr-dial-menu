@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single Dial Menu Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0a0a0a;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #fff;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #2bee8c;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            background: rgba(43, 238, 140, 0.1);
+            border: 1px solid rgba(43, 238, 140, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .instructions h2 {
+            margin-top: 0;
+            color: #2bee8c;
+        }
+
+        .instructions ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <h1>Single Dial Menu Test</h1>
+
+        <div class="instructions">
+            <h2>How to Use:</h2>
+            <ul>
+                <li><strong>Single Click:</strong> Opens/closes the dial menu</li>
+                <li><strong>Double Click:</strong> Enables slide mode (FAB border turns red)</li>
+                <li><strong>Drag (in slide mode):</strong> Move the FAB vertically</li>
+                <li><strong>Drag icons:</strong> Rotate the dial to select items</li>
+            </ul>
+        </div>
+
+        <p>This page has only ONE dial menu instance, so you can test the slide functionality without seeing "duplicate"
+            FABs from overlapping instances.</p>
+    </div>
+
+    <!-- Single Dial Menu Instance -->
+    <bzr-dial-menu justify="right">
+        <bzr-item label="Video" icon="https://api.iconify.design/mdi:video.svg?color=%232bee8c"
+            data-video="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
+        </bzr-item>
+
+        <bzr-item label="Audio" icon="https://api.iconify.design/mdi:music.svg?color=%232bee8c"
+            data-audio="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+        </bzr-item>
+
+        <bzr-item label="Image" icon="https://api.iconify.design/mdi:image.svg?color=%232bee8c"
+            data-image="https://picsum.photos/800/600">
+        </bzr-item>
+
+        <bzr-item label="Email" icon="https://api.iconify.design/mdi:email.svg?color=%232bee8c"
+            data-email="hello@example.com">
+        </bzr-item>
+
+        <bzr-item label="Phone" icon="https://api.iconify.design/mdi:phone.svg?color=%232bee8c"
+            data-phone="+1-555-0123">
+        </bzr-item>
+
+        <bzr-item label="Map" icon="https://api.iconify.design/mdi:map-marker.svg?color=%232bee8c"
+            data-map="37.7749,-122.4194">
+        </bzr-item>
+
+        <bzr-item label="Link" icon="https://api.iconify.design/mdi:link.svg?color=%232bee8c" href="https://github.com">
+        </bzr-item>
+    </bzr-dial-menu>
+
+    <!-- Load the component -->
+    <script type="module">
+        import './src/bzr-dial-menu.js';
+        import './src/bzr-item.js';
+    </script>
+</body>
+
+</html>
