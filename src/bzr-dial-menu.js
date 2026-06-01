@@ -1663,27 +1663,18 @@ class BzrDialMenu extends HTMLElement {
         ctx.arc(cx, cy, this.radius, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Active Indicator: points toward screen center from the anchor edge.
-        // Right-anchored (default): indicator at PI (9 o'clock / left) — pointing inward.
-        // Left-anchored: indicator at 0 (3 o'clock / right) — pointing inward.
+        // Active indicator — small dot at the active slot position
+        // Right-anchored (default): PI (9 o'clock / left)
+        // Left-anchored: 0 (3 o'clock / right)
         const isLeft = this.getAttribute('justify') === 'left';
         const indicatorAngle = isLeft ? 0 : Math.PI;
+        const ix = cx + Math.cos(indicatorAngle) * this.radius;
+        const iy = cy + Math.sin(indicatorAngle) * this.radius;
 
-        ctx.strokeStyle = '#00ff9d';
-        ctx.lineWidth = 4;
+        ctx.fillStyle = '#00ff9d';
         ctx.beginPath();
-
-        // Calculate position based on angle
-        // 0: cx + r, cy
-        // PI: cx - r, cy
-        let ix = cx + Math.cos(indicatorAngle) * this.radius;
-        let iy = cy + Math.sin(indicatorAngle) * this.radius;
-
-        // Draw a small tick/line
-        // Tangent is vertical.
-        ctx.moveTo(ix, iy - 10);
-        ctx.lineTo(ix, iy + 10);
-        ctx.stroke();
+        ctx.arc(ix, iy, 6, 0, Math.PI * 2);
+        ctx.fill();
 
         // Optional: Velocity Warp?
         if (Math.abs(this.velocity) > 0.05) {
@@ -1698,70 +1689,7 @@ class BzrDialMenu extends HTMLElement {
     }
 
     drawInnerControls(ctx, cx, cy) {
-        // Inner radius for the jog dial area
-        const r = 75;
-
-        ctx.save();
-
-        // 1. Subtle Track
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.lineWidth = 30; // 60px - 90px zone
-        ctx.stroke();
-
-        // 2. Directional Arrows
-        ctx.strokeStyle = '#00ff9d';
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-
-        // Right Side Arrow (Clockwise / Down)
-        // Arc from -10deg to +10deg
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, -0.2, 0.2);
-        ctx.stroke();
-
-        // Arrowhead at bottom (0.2 rad)
-        let x = cx + Math.cos(0.2) * r;
-        let y = cy + Math.sin(0.2) * r;
-        // Simple triangle
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x - 5, y - 5);
-        ctx.lineTo(x + 2, y - 8);
-        // Actually slightly complex to align with tangent. 
-        // Let's use drawing primitives relative to angle.
-
-        this.drawArrowHead(ctx, cx, cy, r, 0.2, 1); // 1 = clockwise (Down)
-        this.drawArrowHead(ctx, cx, cy, r, -0.2, -1); // -1 = counter (Up)
-
-        // Left Side Arrow
-        // We want them to point "Outward" (Up at top, Down at bottom) to indicate scroll direction.
-        // Upper Left (PI - 0.2): CW is Up. So dir = 1.
-        // Lower Left (PI + 0.2): CCW is Down. So dir = -1.
-        this.drawArrowHead(ctx, cx, cy, r, Math.PI - 0.2, 1);
-        this.drawArrowHead(ctx, cx, cy, r, Math.PI + 0.2, -1);
-
-        ctx.restore();
-    }
-
-    drawArrowHead(ctx, cx, cy, r, angle, dir) {
-        let x = cx + Math.cos(angle) * r;
-        let y = cy + Math.sin(angle) * r;
-
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(angle + (Math.PI / 2 * dir)); // Tangent
-
-        ctx.fillStyle = '#00ff9d';
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(-4, -8);
-        ctx.lineTo(4, -8);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.restore();
+        // Reserved for future use — inner jog dial removed for clean icon path
     }
 
 
