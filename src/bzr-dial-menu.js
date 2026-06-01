@@ -12,7 +12,17 @@
 class BzrDialMenu extends HTMLElement {
     constructor() {
         super();
+        
+        // License validation
+        this._licenseValid = this._validateLicense();
+        if (!this._licenseValid && typeof console !== 'undefined') {
+            console.warn('bzr-dial-ui: No valid license key. Purchase at https://bzzrr.link');
+        }
+
         this.attachShadow({ mode: 'open' });
+
+        // Watermark for unlicensed use
+        this._unlicensed = !this._licenseValid;
 
         // State
         this.isOpen = false;
@@ -33,6 +43,16 @@ class BzrDialMenu extends HTMLElement {
         // Animation Loop
         this._raf = null;
         this._boundLoop = this._loop.bind(this);
+    }
+
+    /**
+     * Validate license key format: BZRD-XXXX-XXXX-XXXX-XXXX
+     * Full validation requires server-side check.
+     */
+    _validateLicense() {
+        const key = this.getAttribute('license');
+        if (!key) return false;
+        return /^BZRD-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}$/.test(key);
     }
 
     static get observedAttributes() {
@@ -62,6 +82,36 @@ class BzrDialMenu extends HTMLElement {
 
         // Initial tick
         this._loop();
+
+        // Unlicensed watermark
+        if (this._unlicensed) {
+            this._addWatermark();
+        }
+    }
+
+    _addWatermark() {
+        const style = document.createElement('style');
+        style.textContent = `
+            .bzr-watermark {
+                position: fixed;
+                bottom: 12px;
+                right: 12px;
+                background: rgba(0,0,0,0.7);
+                color: #f59e0b;
+                font-family: 'Space Grotesk', monospace;
+                font-size: 10px;
+                padding: 4px 8px;
+                border-radius: 4px;
+                z-index: 99999;
+                pointer-events: none;
+                letter-spacing: 0.5px;
+            }
+        `;
+        document.head.appendChild(style);
+        const wm = document.createElement('div');
+        wm.className = 'bzr-watermark';
+        wm.textContent = 'bzr-dial-ui — UNLICENSED — bzzrr.link';
+        document.body.appendChild(wm);
     }
 
     disconnectedCallback() {
@@ -340,6 +390,7 @@ class BzrDialMenu extends HTMLElement {
                 justify-content: center;
                 font-weight: bold;
                 transition: transform 0.2s;
+                z-index: 100;
             }
 
             #content-close:hover {
@@ -571,6 +622,7 @@ class BzrDialMenu extends HTMLElement {
     setupEvents() {
         // Click delay timer to distinguish single vs double click
         this._clickTimer = null;
+        this._resizeHandlers = [];
 
         // Trigger click handler - toggles menu and closes content overlay
         this.els.trigger.addEventListener('click', (e) => {
@@ -1132,6 +1184,12 @@ class BzrDialMenu extends HTMLElement {
             m.remove();
         });
 
+        // Clean up window resize listeners from media players
+        this._resizeHandlers.forEach(handler => {
+            window.removeEventListener('resize', handler);
+        });
+        this._resizeHandlers = [];
+
         if (this.audioCtx) {
             this.audioCtx.close();
             this.audioCtx = null;
@@ -1242,13 +1300,15 @@ class BzrDialMenu extends HTMLElement {
 
         // Opacity Logic: Fade out controls when idle
         let idleTimer;
-        container.addEventListener('mousemove', () => {
+        const showControls = () => {
             controls.style.opacity = '1';
             clearTimeout(idleTimer);
             idleTimer = setTimeout(() => {
-                if (!mediaElement.paused) controls.style.opacity = '0';
+                if (!mediaElement.paused && !mediaElement.ended) controls.style.opacity = '0';
             }, 3000);
-        });
+        };
+        container.addEventListener('mousemove', showControls);
+        container.addEventListener('click', showControls);
     }
 
     createAudioVisualizer(audioSrc, autoplay = false) {
@@ -1265,6 +1325,7 @@ class BzrDialMenu extends HTMLElement {
             canvas.height = window.innerHeight;
         };
         window.addEventListener('resize', resize);
+        this._resizeHandlers.push(resize);
         resize();
 
         this.els.contentBody.appendChild(canvas);
@@ -1372,6 +1433,7 @@ class BzrDialMenu extends HTMLElement {
             canvas.height = window.innerHeight;
         };
         window.addEventListener('resize', resize);
+        this._resizeHandlers.push(resize);
         resize();
 
         this.els.contentBody.appendChild(canvas);
@@ -1433,6 +1495,7 @@ class BzrDialMenu extends HTMLElement {
             canvas.height = window.innerHeight;
         };
         window.addEventListener('resize', resize);
+        this._resizeHandlers.push(resize);
         resize();
 
         this.els.contentBody.appendChild(canvas);
