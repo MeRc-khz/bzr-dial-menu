@@ -153,7 +153,9 @@ class BzrDialMenu extends HTMLElement {
                 transform: translateY(-50%); /* Center strictly */
             }
 
-            /* Demo mode: embed inline on the left edge of the container */
+            /* Demo mode: embed inline on the left edge of the container.
+               Trigger at left edge via left: -40px. overflow:visible so orbiting
+               icons are not clipped by the host boundary. */
             :host([demo]) {
                 position: relative;
                 top: auto;
@@ -163,6 +165,7 @@ class BzrDialMenu extends HTMLElement {
                 height: 100%;
                 transform: none;
                 pointer-events: auto;
+                overflow: visible;
             }
 
             :host([demo][open]) {
@@ -176,31 +179,16 @@ class BzrDialMenu extends HTMLElement {
                 pointer-events: auto;
             }
 
-            :host([demo]) #trigger {
-                top: 50%;
-                left: 0;
-                margin-top: -40px;
-                margin-left: -40px;
+            @keyframes pulse {
+                0% { box-shadow: 0 0 0 0 rgba(43, 238, 140, 0.3); }
+                70% { box-shadow: 0 0 0 20px rgba(43, 238, 140, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(43, 238, 140, 0); }
             }
 
-            :host([open]) #trigger {
-                top: 50%;
-                left: auto;
-                right: 0;
-                margin-top: -40px;
-                margin-right: -40px;
+            #trigger:hover {
+                animation: pulse 1.5s infinite;
             }
 
-            :host([demo][open]) #trigger {
-                top: 50%;
-                left: 0;
-                right: auto;
-                margin-top: -40px;
-                margin-left: -40px;
-                margin-right: 0;
-            }
-
-            /* Production: left-justify flips to left edge */
             :host([justify="left"]) {
                 right: auto;
                 left: -40px;
@@ -249,14 +237,14 @@ class BzrDialMenu extends HTMLElement {
                 border-radius: inherit;
             }
 
-            /* Trigger Button - Always stays at (0,0) within host */
-            /* If host is fullscreen [open], we need to position trigger manually to match the visual edge anchor */
+            /* Trigger = the nucleus. Always at (0,0) — never moves.
+               Host is positioned so trigger center sits exactly on the screen edge.
+               Icons orbit this point via JS in positionItems(). */
             #trigger {
                 position: absolute;
-                top: 0; 
+                top: 0;
                 left: 0;
                 width: 80px; height: 80px;
-                /* Centered in host when closed */
                 margin: 0;
                 border-radius: 50%;
                 background: var(--primary);
@@ -289,49 +277,21 @@ class BzrDialMenu extends HTMLElement {
                 box-shadow: 0 0 20px #ff0055;
             }
 
-            /* Container for the rotating dial elements - positioned at FAB location */
-            /* Container for the rotating dial elements */
+            /* Container for the rotating dial elements — atom model.
+               Always centered on the trigger (0,0). Icons orbit around this point via JS. */
             #dial-container {
                 position: absolute;
-                top: 50%; 
-                left: 50%;
+                top: 0;
+                left: 0;
                 width: 0; height: 0;
                 opacity: 0;
-                transform: translate(-50%, -50%) scale(0.8);
-                transition: opacity 0.3s, transform 0.3s;
+                transition: opacity 0.3s;
                 pointer-events: none;
-                display: flex;
-                align-items: center;
-                justify-content: center;
             }
 
             :host([open]) #dial-container {
-                /* When open, position at edge center */
-                left: auto; 
-                right: 0;
-                transform: scale(1);
-                opacity: 1; 
-                pointer-events: auto;
-            }
-
-            :host([demo][open]) #dial-container {
-                left: 0;
-                right: auto;
-                top: 50%;
-                transform: translateY(-50%) scale(1);
                 opacity: 1;
                 pointer-events: auto;
-            }
-            
-            :host([open][justify="left"]) #dial-container {
-                right: auto; 
-                left: 0;
-            }
-
-            :host([demo][open][justify="left"]) #dial-container {
-                right: auto;
-                left: 50%;
-                transform: translate(-50%, -50%) scale(1);
             }
 
             /* Active Label (Bottom Center) */
