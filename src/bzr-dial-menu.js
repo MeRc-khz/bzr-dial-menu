@@ -60,11 +60,16 @@ class BzrDialMenu extends HTMLElement {
     }
 
     connectedCallback() {
+        // Demo mode defaults to left edge so items fan rightward
+        if (this.hasAttribute('demo') && !this.hasAttribute('justify')) {
+            this.setAttribute('justify', 'left');
+        }
+
         this.render();
         this.setupEvents();
 
         this.updateItems();
-        this.updatePosition(); // Ensure position is set on connect
+        this.updatePosition();
 
         // Host click listener for easier interaction when docked
         this.addEventListener('click', (e) => {
@@ -148,12 +153,12 @@ class BzrDialMenu extends HTMLElement {
                 transform: translateY(-50%); /* Center strictly */
             }
 
-            /* Demo mode: embed inline inside a container */
+            /* Demo mode: embed inline on the left edge of the container */
             :host([demo]) {
                 position: relative;
                 top: auto;
                 right: auto;
-                left: auto;
+                left: -40px;
                 width: 100%;
                 height: 100%;
                 transform: none;
@@ -166,30 +171,50 @@ class BzrDialMenu extends HTMLElement {
                 height: 100%;
                 top: auto;
                 right: auto;
-                left: auto !important;
+                left: 0 !important;
                 transform: none;
                 pointer-events: auto;
             }
 
-            :host([demo]) .demo-fill {
-                position: absolute;
-                inset: 0;
+            :host([demo]) #trigger {
+                top: 50%;
+                left: 0;
+                margin-top: -40px;
+                margin-left: -40px;
             }
 
+            :host([open]) #trigger {
+                top: 50%;
+                left: auto;
+                right: 0;
+                margin-top: -40px;
+                margin-right: -40px;
+            }
+
+            :host([demo][open]) #trigger {
+                top: 50%;
+                left: 0;
+                right: auto;
+                margin-top: -40px;
+                margin-left: -40px;
+                margin-right: 0;
+            }
+
+            /* Production: left-justify flips to left edge */
             :host([justify="left"]) {
                 right: auto;
                 left: -40px;
             }
 
+            /* Production: fullscreen overlay when open */
             :host([open]) {
-                /* When open, we still want to be anchored, but overlay covers screen */
                 width: 100%;
                 height: 100%;
                 top: 0;
                 right: 0;
-                left: 0 !important; /* Override justify positioning */
+                left: 0 !important;
                 transform: none;
-                pointer-events: none; /* Let clicks pass to overlay/trigger */
+                pointer-events: none;
             }
 
             /* The fullscreen overlay for capturing input and showing the rail */
@@ -248,37 +273,6 @@ class BzrDialMenu extends HTMLElement {
                 pointer-events: auto;
             }
 
-            :host([demo]) #trigger {
-                top: 50%;
-                left: 50%;
-                margin-top: -40px;
-                margin-left: -40px;
-            }
-
-            :host([open]) #trigger {
-                /* When open, host is fullscreen. Position manually at edge anchor. */
-                top: 50%;
-                left: auto;
-                right: 0;
-                margin-top: -40px;
-                margin-right: -40px; /* Half off-screen */
-            }
-
-            :host([demo][open]) #trigger {
-                top: 50%;
-                left: 50%;
-                right: auto;
-                margin-top: -40px;
-                margin-left: -40px;
-                margin-right: 0;
-            }
-
-            :host([justify="left"][open]) #trigger {
-                right: auto;
-                left: 0;
-                margin-right: 0;
-                margin-left: -40px;
-            }
             @keyframes pulse {
                 0% { box-shadow: 0 0 0 0 rgba(43, 238, 140, 0.3); }
                 70% { box-shadow: 0 0 0 20px rgba(43, 238, 140, 0); }
@@ -321,10 +315,10 @@ class BzrDialMenu extends HTMLElement {
             }
 
             :host([demo][open]) #dial-container {
-                left: 50%;
+                left: 0;
                 right: auto;
                 top: 50%;
-                transform: translate(-50%, -50%) scale(1);
+                transform: translateY(-50%) scale(1);
                 opacity: 1;
                 pointer-events: auto;
             }
@@ -910,7 +904,11 @@ class BzrDialMenu extends HTMLElement {
             if (delta < -Math.PI) delta += Math.PI * 2;
 
             this.rotation += delta;
-            this.velocity = delta; // Simple velocity tracking
+
+            // Mirror velocity for left-justify so drag direction matches visual
+            const isLeft = this.getAttribute('justify') === 'left';
+            if (isLeft) this.velocity = -delta;
+            else this.velocity = delta;
             this.lastAngle = currentAngle;
 
             this.checkSnapFeedback();
@@ -1026,12 +1024,29 @@ class BzrDialMenu extends HTMLElement {
         const count = this.items.length;
         if (count === 0) return;
 
-        // Full 360° wheel layout — items spread evenly around the circle
-        this.snapAngle = (Math.PI * 2) / count;
+        const isRight = this.getAttribute('justify') !== 'left';
+        const anchor = this.getAttribute('anchor') || (isRight ? 'right' : 'left');
+
+        // Active slot angle: where the selected item appears (the "perpendicular" at the edge)
+        // Right anchor → items fan leftward, active at PI (9 o'clock / left)
+        // Left anchor  → items fan rightward, active at 0 (3 o'clock / right)
+        // Top anchor   → items fan downward, active at PI/2 (6 o'clock / bottom)
+        // Bottom anchor→ items fan upward, active at -PI/2 (12 o'clock / top)
+        let activeSlotAngle;
+        if (anchor === 'left')       activeSlotAngle = 0;
+        else if (anchor === 'top')   activeSlotAngle = Math.PI / 2;
+        else if (anchor === 'bottom') activeSlotAngle = -Math.PI / 2;
+        else                         activeSlotAngle = Math.PI; // right (default)
+
+        // Half-dial: items spread across PI (180°) arc from the active slot
+        this.snapAngle = count > 1 ? Math.PI / (count - 1) : Math.PI / 4;
+
+        // Place items: first item at center-top of arc, last at center-bottom
+        // Arc is centered on activeSlotAngle, spanning PI total
+        const startAngle = activeSlotAngle - (Math.PI / 2);
 
         this.items.forEach((item, index) => {
-            // Start from the left side (PI) and go clockwise
-            let angle = Math.PI + (index * this.snapAngle);
+            let angle = startAngle + (index * this.snapAngle);
             item.dataset.baseAngle = angle;
         });
 
@@ -1039,17 +1054,25 @@ class BzrDialMenu extends HTMLElement {
     }
 
     positionItems() {
-        const count = this.items.length;
+        const isRight = this.getAttribute('justify') !== 'left';
+        const anchor = this.getAttribute('anchor') || (isRight ? 'right' : 'left');
         let minDiff = Infinity;
         let nearestIndex = -1;
 
-        // Active slot is at the top of the wheel (-PI/2 = 12 o'clock)
-        const activeTargetAngle = -Math.PI / 2;
+        // Active slot is the "perpendicular" — where items face outward from the edge
+        let activeTargetAngle;
+        if (anchor === 'left')       activeTargetAngle = 0;           // 3 o'clock
+        else if (anchor === 'top')   activeTargetAngle = Math.PI / 2;  // 6 o'clock
+        else if (anchor === 'bottom') activeTargetAngle = -Math.PI / 2; // 12 o'clock
+        else                         activeTargetAngle = Math.PI;      // 9 o'clock (right default)
 
         // First pass: Calculate positions and find nearest to active slot
         this.items.forEach((item, index) => {
             const baseAngle = parseFloat(item.dataset.baseAngle);
             let angle = baseAngle + this.rotation;
+
+            // Mirror for left-justify so items fan outward (rightward) from the left edge
+            if (!isRight) angle = -angle;
 
             const x = this.radius * Math.cos(angle);
             const y = this.radius * Math.sin(angle);
@@ -1060,7 +1083,7 @@ class BzrDialMenu extends HTMLElement {
             if (normalizedAngle < 0) normalizedAngle += 2 * Math.PI;
 
             let diff = Math.abs(normalizedAngle - activeTargetAngle);
-            if (diff > Math.PI) diff = 2 * Math.PI - diff; // Handle wrap-around
+            if (diff > Math.PI) diff = 2 * Math.PI - diff;
 
             if (diff < minDiff) {
                 minDiff = diff;
