@@ -148,6 +148,34 @@ class BzrDialMenu extends HTMLElement {
                 transform: translateY(-50%); /* Center strictly */
             }
 
+            /* Demo mode: embed inline inside a container */
+            :host([demo]) {
+                position: relative;
+                top: auto;
+                right: auto;
+                left: auto;
+                width: 100%;
+                height: 100%;
+                transform: none;
+                pointer-events: auto;
+            }
+
+            :host([demo][open]) {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                top: auto;
+                right: auto;
+                left: auto !important;
+                transform: none;
+                pointer-events: auto;
+            }
+
+            :host([demo]) .demo-fill {
+                position: absolute;
+                inset: 0;
+            }
+
             :host([justify="left"]) {
                 right: auto;
                 left: -40px;
@@ -176,6 +204,12 @@ class BzrDialMenu extends HTMLElement {
                 backdrop-filter: blur(5px);
                 -webkit-backdrop-filter: blur(5px);
             }
+
+            :host([demo]) #overlay {
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                border-radius: inherit;
+            }
             
             :host([open]) #overlay {
                 pointer-events: auto;
@@ -185,12 +219,17 @@ class BzrDialMenu extends HTMLElement {
                 opacity: 1;
             }
 
+            :host([demo][open]) #overlay {
+                position: absolute;
+                border-radius: inherit;
+            }
+
             /* Trigger Button - Always stays at (0,0) within host */
             /* If host is fullscreen [open], we need to position trigger manually to match the visual edge anchor */
             #trigger {
                 position: absolute;
                 top: 0; 
-                left: 0; 
+                left: 0;
                 width: 80px; height: 80px;
                 /* Centered in host when closed */
                 margin: 0;
@@ -209,6 +248,13 @@ class BzrDialMenu extends HTMLElement {
                 pointer-events: auto;
             }
 
+            :host([demo]) #trigger {
+                top: 50%;
+                left: 50%;
+                margin-top: -40px;
+                margin-left: -40px;
+            }
+
             :host([open]) #trigger {
                 /* When open, host is fullscreen. Position manually at edge anchor. */
                 top: 50%;
@@ -216,6 +262,15 @@ class BzrDialMenu extends HTMLElement {
                 right: 0;
                 margin-top: -40px;
                 margin-right: -40px; /* Half off-screen */
+            }
+
+            :host([demo][open]) #trigger {
+                top: 50%;
+                left: 50%;
+                right: auto;
+                margin-top: -40px;
+                margin-left: -40px;
+                margin-right: 0;
             }
 
             :host([justify="left"][open]) #trigger {
@@ -264,10 +319,25 @@ class BzrDialMenu extends HTMLElement {
                 opacity: 1; 
                 pointer-events: auto;
             }
+
+            :host([demo][open]) #dial-container {
+                left: 50%;
+                right: auto;
+                top: 50%;
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+                pointer-events: auto;
+            }
             
             :host([open][justify="left"]) #dial-container {
                 right: auto; 
                 left: 0;
+            }
+
+            :host([demo][open][justify="left"]) #dial-container {
+                right: auto;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(1);
             }
 
             /* Active Label (Bottom Center) */
@@ -286,6 +356,10 @@ class BzrDialMenu extends HTMLElement {
                 transition: opacity 0.3s, transform 0.3s;
                 opacity: 0;
                 z-index: 1000; /* Ensure on top */
+            }
+
+            :host([demo]) #active-label {
+                bottom: 10%;
             }
             
             :host([open]) #active-label {
@@ -354,6 +428,12 @@ class BzrDialMenu extends HTMLElement {
                 z-index: 10000;
                 opacity: 0;
                 transition: opacity 0.3s;
+            }
+
+            :host([demo]) #content-overlay {
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                border-radius: inherit;
             }
 
             #content-overlay.active {
