@@ -37,7 +37,7 @@ class BzrDialMenu extends HTMLElement {
         this.targetRotation = null;
 
         // Physics
-        this.friction = 0.95;
+        this.friction = 0.985;
         this.spring = 0.1;
 
         // Animation Loop
@@ -890,14 +890,6 @@ class BzrDialMenu extends HTMLElement {
 
                     let currentSlot = Math.round(this.rotation / this.snapAngle);
                     let targetSlot = currentSlot + direction;
-
-                    // Clamp to valid item range: slots -(count-1)..0
-                    // At slot 0, item 0 is at the perpendicular.
-                    // At slot -(count-1), the last item is at the perpendicular.
-                    const maxSlot = this.items.length - 1;
-                    if (targetSlot > 0) targetSlot = 0;
-                    if (targetSlot < -maxSlot) targetSlot = -maxSlot;
-
                     this.targetRotation = targetSlot * this.snapAngle;
                     return;
                 }
@@ -916,15 +908,6 @@ class BzrDialMenu extends HTMLElement {
             // Normalize
             if (delta > Math.PI) delta -= Math.PI * 2;
             if (delta < -Math.PI) delta += Math.PI * 2;
-
-            // Free-spin uses atan2 relative to FAB center.
-            // For right-side dials, the math naturally produces correct direction.
-            // For left-side dials, positionItems() mirrors with angle = -angle,
-            // so we negate delta to match the visual direction.
-            const isLeft = this.getAttribute('justify') === 'left';
-            if (isLeft) {
-                delta = -delta;
-            }
 
             this.rotation += delta;
             this.velocity = delta; // Simple velocity tracking
@@ -1043,45 +1026,36 @@ class BzrDialMenu extends HTMLElement {
         const count = this.items.length;
         if (count === 0) return;
 
-        // Configuration
-        const isRight = this.getAttribute('justify') !== 'left';
-        // Arc Size: 180 degrees (PI)
-        this.snapAngle = 45 * (Math.PI / 180);
+        // Full 360° wheel layout — items spread evenly around the circle
+        this.snapAngle = (Math.PI * 2) / count;
 
-        // Center Angle: PI (180) for Right justify, 0 for Left
-        const centerAngle = isRight ? Math.PI : 0;
-
-        // Place item 0 at the perpendicular (centerAngle).
-        // Subsequent items fan out by snapAngle increments.
-        // This ensures one icon ALWAYS lands at the perpendicular position.
         this.items.forEach((item, index) => {
-            let angle = centerAngle + (index * this.snapAngle);
+            // Start from the left side (PI) and go clockwise
+            let angle = Math.PI + (index * this.snapAngle);
             item.dataset.baseAngle = angle;
         });
 
-        // Position items immediately after layout
         this.positionItems();
     }
 
     positionItems() {
-        const isRight = this.getAttribute('justify') !== 'left';
+        const count = this.items.length;
         let minDiff = Infinity;
         let nearestIndex = -1;
 
-        // First pass: Calculate positions and find nearest
+        // Active slot is at the top of the wheel (-PI/2 = 12 o'clock)
+        const activeTargetAngle = -Math.PI / 2;
+
+        // First pass: Calculate positions and find nearest to active slot
         this.items.forEach((item, index) => {
             const baseAngle = parseFloat(item.dataset.baseAngle);
             let angle = baseAngle + this.rotation;
-
-            // Adjust angle for left-justified to mirror
-            if (!isRight) angle = -angle;
 
             const x = this.radius * Math.cos(angle);
             const y = this.radius * Math.sin(angle);
             item.style.transform = `translate(${x}px, ${y}px)`;
 
-            // Determine active proximity relative to the "active slot" (0 or PI)
-            let activeTargetAngle = isRight ? Math.PI : 0;
+            // Determine active proximity relative to the active slot
             let normalizedAngle = angle % (2 * Math.PI);
             if (normalizedAngle < 0) normalizedAngle += 2 * Math.PI;
 
@@ -1636,19 +1610,11 @@ class BzrDialMenu extends HTMLElement {
             this.rotation += this.velocity;
             this.velocity *= this.friction;
 
-            // Snapping
-            // Find nearest slot
+            // Snapping — wrap around for free spin wheel
             if (Math.abs(this.velocity) < 0.01) {
                 let slot = Math.round(this.rotation / this.snapAngle);
-
-                // Clamp to valid item range: slots -(count-1)..0
-                const maxSlot = this.items.length - 1;
-                if (slot > 0) slot = 0;
-                if (slot < -maxSlot) slot = -maxSlot;
-
                 let target = slot * this.snapAngle;
                 let diff = target - this.rotation;
-
                 this.velocity += diff * this.spring;
             }
         }
