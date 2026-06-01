@@ -141,42 +141,37 @@ class BzrDialMenu extends HTMLElement {
             :host {
                 display: block;
                 position: fixed;
-                top: 50%; /* Vertical center by default */
-                right: -40px; /* Center circle on right edge */
-                width: 80px; 
+                top: 50%;
+                right: 0px;
+                width: 80px;
                 height: 80px;
                 z-index: 9999;
                 font-family: 'Space Grotesk', sans-serif;
                 --primary: #2bee8c;
                 --bg: #111;
                 --text: #fff;
-                transform: translateY(-50%); /* Center strictly */
+                transform: translateY(-50%);
             }
 
-            /* Demo mode: embed inline on the left edge of the container.
-               Trigger at left edge via left: -40px. overflow:visible so orbiting
-               icons are not clipped by the host boundary. */
+            /* Demo mode: embed inline, centered in the container.
+               Trigger sits at center of the host box, ring radiates outward. */
             :host([demo]) {
                 position: relative;
                 top: auto;
                 right: auto;
-                left: -40px;
+                left: auto;
                 width: 100%;
                 height: 100%;
+                min-height: 300px;
                 transform: none;
                 pointer-events: auto;
                 overflow: visible;
             }
 
-            :host([demo][open]) {
-                position: relative;
-                width: 100%;
-                height: 100%;
-                top: auto;
-                right: auto;
-                left: 0 !important;
-                transform: none;
-                pointer-events: auto;
+            :host([demo]) #trigger {
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
             }
 
             @keyframes pulse {
@@ -191,7 +186,7 @@ class BzrDialMenu extends HTMLElement {
 
             :host([justify="left"]) {
                 right: auto;
-                left: -40px;
+                left: 0px;
             }
 
             /* Production: fullscreen overlay when open */
@@ -218,6 +213,17 @@ class BzrDialMenu extends HTMLElement {
                 -webkit-backdrop-filter: blur(5px);
             }
 
+            :host([demo]) #dial-container {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+            }
+
+            :host([demo][open]) #dial-container {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
             :host([demo]) #overlay {
                 position: absolute;
                 top: 0; left: 0; right: 0; bottom: 0;
@@ -237,13 +243,13 @@ class BzrDialMenu extends HTMLElement {
                 border-radius: inherit;
             }
 
-            /* Trigger = the nucleus. Always at (0,0) — never moves.
-               Host is positioned so trigger center sits exactly on the screen edge.
-               Icons orbit this point via JS in positionItems(). */
+            /* Trigger = the nucleus. Center sits exactly on the viewport edge.
+               Host right:0 + trigger right:0 puts trigger center 40px inside the
+               right edge. Icons orbit this point via JS in positionItems(). */
             #trigger {
                 position: absolute;
                 top: 0;
-                left: 0;
+                right: 0;
                 width: 80px; height: 80px;
                 margin: 0;
                 border-radius: 50%;
@@ -278,7 +284,9 @@ class BzrDialMenu extends HTMLElement {
             }
 
             /* Container for the rotating dial elements — atom model.
-               Always centered on the trigger (0,0). Icons orbit around this point via JS. */
+               When closed: collapsed at host origin (clipped to 80x80 host).
+               When open: JS positions .dial-fixed at the trigger center in viewport
+               coordinates so the ring radiates from the screen edge. */
             #dial-container {
                 position: absolute;
                 top: 0;
@@ -292,6 +300,14 @@ class BzrDialMenu extends HTMLElement {
             :host([open]) #dial-container {
                 opacity: 1;
                 pointer-events: auto;
+            }
+
+            #dial-container.dial-fixed {
+                position: fixed;
+            }
+
+            :host([justify="left"]) #dial-container.dial-fixed {
+                /* left-justify: mirror the ring direction */
             }
 
             /* Active Label (Bottom Center) */
@@ -320,7 +336,7 @@ class BzrDialMenu extends HTMLElement {
                 opacity: 1;
             }
 
-            /* The Canvas Rail */
+            /* The Canvas Rail — centered on the trigger/origin point */
             canvas {
                 position: absolute;
                 top: -300px; left: -300px;
@@ -658,6 +674,14 @@ class BzrDialMenu extends HTMLElement {
         this._clickTimer = null;
         this._resizeHandlers = [];
 
+        // Reposition dial container on viewport resize when open
+        let _resizeTimer = null;
+        window.addEventListener('resize', () => {
+            if (!this.isOpen) return;
+            clearTimeout(_resizeTimer);
+            _resizeTimer = setTimeout(() => this._positionDialContainer(), 100);
+        });
+
         // Trigger click handler - toggles menu and closes content overlay
         this.els.trigger.addEventListener('click', (e) => {
             // If dragging or sliding, ignore
@@ -817,9 +841,9 @@ class BzrDialMenu extends HTMLElement {
                 this.style.transform = 'none';
                 this.style.top = `${newTop}px`;
 
-                // Move the dial container with the FAB
-                if (this.isOpen) {
-                    this.els.container.style.top = `${newTop + 40}px`; // FAB center offset
+                // Reposition the dial container to follow the trigger (production only)
+                if (this.isOpen && !this.hasAttribute('demo')) {
+                    this._positionDialContainer();
                 }
 
                 return; // Stop other interactions
@@ -970,12 +994,14 @@ class BzrDialMenu extends HTMLElement {
         }
 
         // Horizontal Positioning (Justify)
+        // Host edge is flush with the viewport edge (right:0 or left:0).
+        // The trigger nub center sits on that edge via CSS.
         if (justify === 'left') {
-            this.style.left = '-40px';
+            this.style.left = '0px';
             this.style.right = 'auto';
         } else {
             // Default to right (or explicit right)
-            this.style.right = '-40px';
+            this.style.right = '0px';
             this.style.left = 'auto';
         }
     }
@@ -998,12 +1024,11 @@ class BzrDialMenu extends HTMLElement {
         else if (anchor === 'bottom') activeSlotAngle = -Math.PI / 2;
         else                         activeSlotAngle = Math.PI; // right (default)
 
-        // Half-dial: items spread across PI (180°) arc from the active slot
-        this.snapAngle = count > 1 ? Math.PI / (count - 1) : Math.PI / 4;
+        // Full-dial: items evenly spaced across 360° (2*PI)
+        this.snapAngle = (Math.PI * 2) / count;
 
-        // Place items: first item at center-top of arc, last at center-bottom
-        // Arc is centered on activeSlotAngle, spanning PI total
-        const startAngle = activeSlotAngle - (Math.PI / 2);
+        // Start from the active slot angle so first item appears at the active position
+        const startAngle = activeSlotAngle - (Math.PI * 2) / (2 * count);
 
         this.items.forEach((item, index) => {
             let angle = startAngle + (index * this.snapAngle);
@@ -1075,13 +1100,31 @@ class BzrDialMenu extends HTMLElement {
         }
     }
 
+    /** Position the dial-container origin at the trigger center in viewport coords.
+     *  Called on open, slide, and any time the trigger position changes.
+     *  Skipped in demo mode — dial-container stays absolutely positioned in host. */
+    _positionDialContainer() {
+        const rect = this.els.trigger.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dc = this.els.container;
+        dc.classList.add('dial-fixed');
+        dc.style.left = `${cx}px`;
+        dc.style.top = `${cy}px`;
+    }
+
     toggle() {
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
             this.setAttribute('open', '');
-            document.body.style.overflow = 'hidden'; // Lock scroll
-            // Centering logic can go here if we wanted strictly JS positioning
+            document.body.style.overflow = 'hidden';
+            if (!this.hasAttribute('demo')) {
+                this._positionDialContainer();
+            }
         } else {
+            this.els.container.classList.remove('dial-fixed');
+            this.els.container.style.left = '';
+            this.els.container.style.top = '';
             this.removeAttribute('open');
             document.body.style.overflow = '';
         }
@@ -1620,12 +1663,11 @@ class BzrDialMenu extends HTMLElement {
         ctx.arc(cx, cy, this.radius, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Active Indicator (at 3 o'clock? or 12?)
-        // Standard: 3 o'clock (0 degrees).
-        // Right Justified: 9 o'clock (PI degrees) - Lefty mode / Visible side.
-
-        const isRight = this.getAttribute('justify') === 'right';
-        const indicatorAngle = isRight ? Math.PI : 0;
+        // Active Indicator: points toward screen center from the anchor edge.
+        // Right-anchored (default): indicator at PI (9 o'clock / left) — pointing inward.
+        // Left-anchored: indicator at 0 (3 o'clock / right) — pointing inward.
+        const isLeft = this.getAttribute('justify') === 'left';
+        const indicatorAngle = isLeft ? 0 : Math.PI;
 
         ctx.strokeStyle = '#00ff9d';
         ctx.lineWidth = 4;
