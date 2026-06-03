@@ -60,11 +60,6 @@ class BzrDialMenu extends HTMLElement {
     }
 
     connectedCallback() {
-        // Demo mode defaults to left edge so items fan rightward
-        if (this.hasAttribute('demo') && !this.hasAttribute('justify')) {
-            this.setAttribute('justify', 'left');
-        }
-
         this.render();
         this.setupEvents();
 
@@ -141,37 +136,17 @@ class BzrDialMenu extends HTMLElement {
             :host {
                 display: block;
                 position: fixed;
-                top: 50%;
-                right: 0px;
-                width: 80px;
-                height: 80px;
+                top: 0;
+                right: 0;
+                width: calc(var(--trigger-size, 80px) + var(--trigger-inset, 20px));
+                height: calc(var(--trigger-size, 80px) + var(--trigger-inset, 20px));
                 z-index: 9999;
                 font-family: 'Space Grotesk', sans-serif;
                 --primary: #2bee8c;
                 --bg: #111;
                 --text: #fff;
-                transform: translateY(-50%);
-            }
-
-            /* Demo mode: embed inline, centered in the container.
-               Trigger sits at center of the host box, ring radiates outward. */
-            :host([demo]) {
-                position: relative;
-                top: auto;
-                right: auto;
-                left: auto;
-                width: 100%;
-                height: 100%;
-                min-height: 300px;
-                transform: none;
-                pointer-events: auto;
-                overflow: visible;
-            }
-
-            :host([demo]) #trigger {
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
+                --trigger-size: 80px;
+                --trigger-inset: calc(var(--trigger-size) / 2 * 0.5);
             }
 
             @keyframes pulse {
@@ -189,14 +164,15 @@ class BzrDialMenu extends HTMLElement {
                 left: 0px;
             }
 
-            /* Production: fullscreen overlay when open */
+            :host([justify="left"]) #trigger {
+                right: auto;
+                left: var(--trigger-inset, 20px);
+            }
+
+            /* Open: host goes fullscreen but invisible; overlay handles interaction */
             :host([open]) {
                 width: 100%;
                 height: 100%;
-                top: 0;
-                right: 0;
-                left: 0 !important;
-                transform: none;
                 pointer-events: none;
             }
 
@@ -213,23 +189,7 @@ class BzrDialMenu extends HTMLElement {
                 -webkit-backdrop-filter: blur(5px);
             }
 
-            :host([demo]) #dial-container {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-            }
-
-            :host([demo][open]) #dial-container {
-                opacity: 1;
-                pointer-events: auto;
-            }
-
-            :host([demo]) #overlay {
-                position: absolute;
-                top: 0; left: 0; right: 0; bottom: 0;
-                border-radius: inherit;
-            }
-            
+            /* When open: fullscreen overlay captures all input */
             :host([open]) #overlay {
                 pointer-events: auto;
                 background: rgba(0,0,0,0.60);
@@ -238,19 +198,14 @@ class BzrDialMenu extends HTMLElement {
                 opacity: 1;
             }
 
-            :host([demo][open]) #overlay {
-                position: absolute;
-                border-radius: inherit;
-            }
-
-            /* Trigger = the nucleus. Center sits exactly on the viewport edge.
-               Host right:0 + trigger right:0 puts trigger center 40px inside the
-               right edge. Icons orbit this point via JS in positionItems(). */
+            /* Trigger = always position:fixed at the viewport edge, regardless of host state */
             #trigger {
-                position: absolute;
-                top: 0;
-                right: 0;
-                width: 80px; height: 80px;
+                position: fixed;
+                top: 50%;
+                right: var(--trigger-inset, 20px);
+                transform: translateY(-50%);
+                width: var(--trigger-size, 80px);
+                height: var(--trigger-size, 80px);
                 margin: 0;
                 border-radius: 50%;
                 background: var(--primary);
@@ -328,10 +283,6 @@ class BzrDialMenu extends HTMLElement {
                 z-index: 1000; /* Ensure on top */
             }
 
-            :host([demo]) #active-label {
-                bottom: 10%;
-            }
-            
             :host([open]) #active-label {
                 opacity: 1;
             }
@@ -400,12 +351,6 @@ class BzrDialMenu extends HTMLElement {
                 transition: opacity 0.3s;
             }
 
-            :host([demo]) #content-overlay {
-                position: absolute;
-                top: 0; left: 0; right: 0; bottom: 0;
-                border-radius: inherit;
-            }
-
             #content-overlay.active {
                 display: flex;
                 opacity: 1;
@@ -425,26 +370,28 @@ class BzrDialMenu extends HTMLElement {
 
             #content-close {
                 position: absolute;
-                top: 10px;
-                right: 10px;
-                width: 40px;
-                height: 40px;
+                top: 16px;
+                right: 16px;
+                width: 56px;
+                height: 56px;
                 border-radius: 50%;
                 background: var(--primary);
                 color: #000;
                 border: none;
-                font-size: 24px;
+                font-size: 32px;
+                line-height: 1;
                 cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 font-weight: bold;
-                transition: transform 0.2s;
+                transition: transform 0.2s, background 0.2s;
                 z-index: 100;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.4);
             }
 
             #content-close:hover {
-                transform: scale(1.1);
+                transform: scale(1.15);
             }
 
             #content-body {
@@ -557,12 +504,17 @@ class BzrDialMenu extends HTMLElement {
 
             #content-container.fullscreen-mode #content-close {
                 z-index: 20;
+                width: 64px;
+                height: 64px;
+                font-size: 36px;
                 background: rgba(0, 255, 157, 0.2);
                 color: #fff;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.5);
             }
             #content-container.fullscreen-mode #content-close:hover {
                 background: var(--primary);
                 color: #000;
+                transform: scale(1.15);
             }
 
             /* Custom Media Controls */
@@ -749,7 +701,10 @@ class BzrDialMenu extends HTMLElement {
             startTriggerDrag(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
         }, { passive: false });
         this.els.itemsSlot.addEventListener('slotchange', () => this.updateItems());
-        this.els.contentClose.addEventListener('click', () => this.hideContent());
+        this.els.contentClose.addEventListener('click', () => {
+            this.hideContent();
+            if (this.isOpen) this.toggle();
+        });
 
 
 
@@ -841,8 +796,8 @@ class BzrDialMenu extends HTMLElement {
                 this.style.transform = 'none';
                 this.style.top = `${newTop}px`;
 
-                // Reposition the dial container to follow the trigger (production only)
-                if (this.isOpen && !this.hasAttribute('demo')) {
+                // Reposition the dial container to follow the trigger
+                if (this.isOpen) {
                     this._positionDialContainer();
                 }
 
@@ -944,10 +899,13 @@ class BzrDialMenu extends HTMLElement {
         window.addEventListener('mouseup', end);
         window.addEventListener('touchend', end);
 
-        // Click anywhere to exit slide mode
+        // Click overlay backdrop: close content+dial if content showing, or exit slide mode
         this.els.overlay.addEventListener('click', (e) => {
-            // Only handle clicks when in slide mode and menu is not open
-            if (this.slideEnabled && !this.isOpen && !this.isDragging) {
+            const contentShowing = this.els.contentOverlay.classList.contains('active');
+            if (contentShowing) {
+                this.hideContent();
+                if (this.isOpen) this.toggle();
+            } else if (this.slideEnabled && !this.isOpen && !this.isDragging) {
                 // Exit slide mode
                 this.slideEnabled = false;
                 this.removeAttribute('slide-enabled');
@@ -1101,8 +1059,7 @@ class BzrDialMenu extends HTMLElement {
     }
 
     /** Position the dial-container origin at the trigger center in viewport coords.
-     *  Called on open, slide, and any time the trigger position changes.
-     *  Skipped in demo mode — dial-container stays absolutely positioned in host. */
+     *  Called on open, slide, and any time the trigger position changes. */
     _positionDialContainer() {
         const rect = this.els.trigger.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
@@ -1118,10 +1075,9 @@ class BzrDialMenu extends HTMLElement {
         if (this.isOpen) {
             this.setAttribute('open', '');
             document.body.style.overflow = 'hidden';
-            if (!this.hasAttribute('demo')) {
-                this._positionDialContainer();
-            }
+            this._positionDialContainer();
         } else {
+            this.hideContent();
             this.els.container.classList.remove('dial-fixed');
             this.els.container.style.left = '';
             this.els.container.style.top = '';
