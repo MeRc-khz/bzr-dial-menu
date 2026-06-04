@@ -336,19 +336,20 @@ class BzrDialMenu extends HTMLElement {
                 text-shadow: 0 0 10px #ff4444;
             }
 
-            /* Content Overlay Modal */
+            /* ═══ Content Overlay Modal ═══ */
             #content-overlay {
                 position: fixed;
                 top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(0, 0, 0, 0.9);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
                 display: none;
                 align-items: center;
                 justify-content: center;
                 z-index: 10000;
                 opacity: 0;
-                transition: opacity 0.3s;
+                transition: opacity 0.3s ease;
+                padding: 24px;
             }
 
             #content-overlay.active {
@@ -357,164 +358,250 @@ class BzrDialMenu extends HTMLElement {
             }
 
             #content-container {
-                background: var(--bg);
-                border: 2px solid var(--primary);
-                border-radius: 8px;
-                padding: 30px;
-                max-width: 90%;
-                max-height: 90%;
-                overflow: auto;
+                background: #111;
+                border: 1px solid #333;
+                border-radius: 16px;
+                width: 100%;
+                max-width: 720px;
+                max-height: calc(100vh - 48px);
+                display: flex;
+                flex-direction: column;
                 position: relative;
-                box-shadow: 0 10px 50px rgba(43, 238, 140, 0.3);
+                box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+                overflow: hidden;
+            }
+
+            /* Modal Header */
+            #content-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 20px 24px;
+                border-bottom: 1px solid #222;
+                flex-shrink: 0;
+            }
+
+            #content-title {
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--primary);
+                letter-spacing: -0.3px;
+                margin: 0;
             }
 
             #content-close {
-                position: absolute;
-                top: 16px;
-                right: 16px;
-                width: 56px;
-                height: 56px;
+                width: 40px;
+                height: 40px;
                 border-radius: 50%;
-                background: var(--primary);
-                color: #000;
+                background: rgba(255,255,255,0.08);
+                color: #888;
                 border: none;
-                font-size: 32px;
+                font-size: 20px;
                 line-height: 1;
                 cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-weight: bold;
-                transition: transform 0.2s, background 0.2s;
-                z-index: 100;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+                transition: all 0.15s ease;
+                flex-shrink: 0;
             }
 
             #content-close:hover {
-                transform: scale(1.15);
+                background: var(--primary);
+                color: #000;
+                transform: scale(1.1);
             }
 
+            /* Modal Body */
             #content-body {
-                margin-top: 20px;
+                padding: 24px;
+                overflow-y: auto;
+                flex: 1;
             }
 
-            /* Media Styles */
-            #content-body video,
-            #content-body audio {
+            /* ─── Media: Audio / Video ─── */
+            .modal-media-wrap {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .modal-media-canvas {
                 width: 100%;
-                max-width: 800px;
-                border-radius: 8px;
+                max-width: 600px;
+                aspect-ratio: 16/9;
+                background: #000;
+                border-radius: 12px;
+                overflow: hidden;
             }
 
-            #content-body iframe {
+            .modal-media-canvas canvas {
                 width: 100%;
-                height: 500px;
-                border: none;
-                border-radius: 8px;
+                height: 100%;
             }
 
-            /* Form Styles */
+            /* ─── Image Viewer ─── */
+            .modal-image-wrap {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #000;
+                border-radius: 12px;
+                overflow: hidden;
+                min-height: 200px;
+            }
+
+            .modal-image-wrap img {
+                max-width: 100%;
+                max-height: 70vh;
+                object-fit: contain;
+            }
+
+            /* ─── Form Styles ─── */
             #content-body form {
-                max-width: 500px;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            #content-body label {
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--primary);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin: 0;
             }
 
             #content-body input,
             #content-body textarea {
                 width: 100%;
-                padding: 12px;
-                margin: 10px 0;
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 6px;
+                padding: 14px 16px;
+                background: rgba(255,255,255,0.05);
+                border: 1px solid #333;
+                border-radius: 10px;
                 color: var(--text);
-                font-size: 16px;
+                font-size: 15px;
                 font-family: inherit;
+                transition: border-color 0.15s, box-shadow 0.15s;
+                box-sizing: border-box;
             }
 
             #content-body input:focus,
             #content-body textarea:focus {
                 outline: none;
                 border-color: var(--primary);
-                box-shadow: 0 0 10px rgba(43, 238, 140, 0.3);
+                box-shadow: 0 0 0 3px rgba(43, 238, 140, 0.15);
             }
 
-            #content-body button[type="submit"] {
-                background: var(--primary);
-                color: #000;
-                border: none;
-                padding: 12px 30px;
-                border-radius: 6px;
-                font-size: 16px;
-                font-weight: bold;
+            #content-body textarea {
+                min-height: 120px;
+                resize: vertical;
+            }
+
+            #content-body .form-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 12px;
+                margin-top: 8px;
+            }
+
+            #content-body .btn {
+                padding: 12px 28px;
+                border-radius: 10px;
+                font-size: 14px;
+                font-weight: 600;
                 cursor: pointer;
-                transition: transform 0.2s;
-                margin-top: 10px;
-            }
-
-            #content-body button[type="submit"]:hover {
-                transform: scale(1.05);
-            }
-
-            #content-body label {
-                display: block;
-                margin-top: 15px;
-                margin-bottom: 5px;
-                color: var(--primary);
-                font-weight: bold;
-            }
-
-            #content-title {
-                font-size: 28px;
-                font-weight: bold;
-                color: var(--primary);
-                margin-bottom: 20px;
-            }
-
-            /* Fullscreen Mode Overrides */
-            #content-container.fullscreen-mode {
-                width: 100%;
-                height: 100%;
-                max-width: 100%;
-                max-height: 100%;
+                transition: all 0.15s;
                 border: none;
-                border-radius: 0;
-                padding: 0;
-                background: #000;
-                display: flex;
-                flex-direction: column;
+                font-family: inherit;
             }
 
-            #content-container.fullscreen-mode #content-title {
-                position: absolute;
-                top: 20px;
-                left: 20px;
-                z-index: 10;
-                text-shadow: 0 2px 5px rgba(0,0,0,0.8);
-                pointer-events: none;
-            }
-            
-            #content-container.fullscreen-mode #content-body {
-                margin: 0;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            #content-container.fullscreen-mode #content-close {
-                z-index: 20;
-                width: 64px;
-                height: 64px;
-                font-size: 36px;
-                background: rgba(0, 255, 157, 0.2);
-                color: #fff;
-                box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-            }
-            #content-container.fullscreen-mode #content-close:hover {
+            #content-body .btn-primary {
                 background: var(--primary);
                 color: #000;
-                transform: scale(1.15);
+            }
+
+            #content-body .btn-primary:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(43, 238, 140, 0.3);
+            }
+
+            #content-body .btn-ghost {
+                background: transparent;
+                color: #888;
+                border: 1px solid #333;
+            }
+
+            #content-body .btn-ghost:hover {
+                border-color: #555;
+                color: #ccc;
+            }
+
+            /* ─── Phone Card ─── */
+            .modal-phone-card {
+                text-align: center;
+                padding: 20px 0;
+            }
+
+            .modal-phone-icon {
+                font-size: 48px;
+                margin-bottom: 16px;
+            }
+
+            .modal-phone-number {
+                font-size: 32px;
+                font-weight: 700;
+                color: var(--primary);
+                margin-bottom: 8px;
+                letter-spacing: -0.5px;
+            }
+
+            .modal-phone-hint {
+                font-size: 14px;
+                color: #666;
+                margin-bottom: 24px;
+            }
+
+            .modal-phone-call-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 16px 40px;
+                background: var(--primary);
+                color: #000;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 700;
+                text-decoration: none;
+                transition: all 0.15s;
+            }
+
+            .modal-phone-call-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(43, 238, 140, 0.3);
+            }
+
+            /* ─── Map ─── */
+            .modal-map-wrap {
+                border-radius: 12px;
+                overflow: hidden;
+                border: 1px solid #333;
+            }
+
+            .modal-map-wrap > div {
+                width: 100% !important;
+                height: 400px !important;
+            }
+
+            /* ─── Iframe ─── */
+            #content-body iframe {
+                width: 100%;
+                height: 500px;
+                border: none;
+                border-radius: 12px;
+                background: #000;
             }
 
             /* Custom Media Controls */
@@ -600,8 +687,10 @@ class BzrDialMenu extends HTMLElement {
         <!-- Content Overlay Modal -->
         <div id="content-overlay">
             <div id="content-container">
-                <button id="content-close">×</button>
-                <div id="content-title"></div>
+                <div id="content-header">
+                    <div id="content-title"></div>
+                    <button id="content-close">×</button>
+                </div>
                 <div id="content-body"></div>
             </div>
         </div>
@@ -712,6 +801,7 @@ class BzrDialMenu extends HTMLElement {
         const start = (e) => {
             if (!this.isOpen) return;
             e.preventDefault(); // Prevent default drag behavior/ghosting
+            console.log('[bzr-start] isOpen=' + this.isOpen + ' target=' + (e.target ? e.target.tagName : 'null'));
             this.isDragging = true;
             this.velocity = 0;
             this.targetRotation = null;
@@ -722,6 +812,7 @@ class BzrDialMenu extends HTMLElement {
             // Check for Icon Hit
             const path = e.composedPath();
             const hitIcon = path.find(el => el.tagName === 'BZR-ITEM');
+            console.log('[bzr-start] hitIcon=' + (hitIcon ? hitIcon.getAttribute('label') : 'null') + ' pathLen=' + path.length);
             this.iconDragState = hitIcon ? { active: true, startY: y, locked: false } : null;
             this.clickedIcon = hitIcon;
 
@@ -857,6 +948,8 @@ class BzrDialMenu extends HTMLElement {
         const end = () => {
             clearTimeout(this.longPressTimer);
 
+            console.log('[bzr-end] hasMoved=' + this.hasMoved + ' clickedIcon=' + (this.clickedIcon ? this.clickedIcon.getAttribute('label') : 'null') + ' isSliding=' + this.isSliding + ' isOpen=' + this.isOpen);
+
             // If we were sliding, persist the new position
             if (this.isSliding && this.hasMoved) {
                 const currentTop = this.style.top;
@@ -868,7 +961,9 @@ class BzrDialMenu extends HTMLElement {
 
             if (!this.hasMoved && this.clickedIcon && !this.isSliding) {
                 // Handle Click on an icon
-                if (this.clickedIcon.hasAttribute('active')) {
+                const isActive = this.clickedIcon.hasAttribute('active');
+                console.log('[bzr-end] clicked icon active=' + isActive + ' label=' + this.clickedIcon.getAttribute('label'));
+                if (isActive) {
                     // Icon is already at the active slot (9 o'clock) — open its content
                     if (this.clickedIcon.hasAttribute('data-audio') ||
                         this.clickedIcon.hasAttribute('data-video') ||
@@ -878,6 +973,7 @@ class BzrDialMenu extends HTMLElement {
                         this.clickedIcon.hasAttribute('data-map') ||
                         this.clickedIcon.hasAttribute('data-iframe')) {
                         this.showContent(this.clickedIcon);
+                        console.log('[bzr-end] calling showContent for ' + this.clickedIcon.getAttribute('label'));
                     } else if (this.clickedIcon.hasAttribute('href')) {
                         window.location.href = this.clickedIcon.getAttribute('href');
                     }
@@ -1138,107 +1234,31 @@ class BzrDialMenu extends HTMLElement {
         this.els.contentTitle.textContent = label;
         this.els.contentBody.innerHTML = '';
 
-        // Reset Style
-        this.shadowRoot.getElementById('content-container').classList.remove('fullscreen-mode');
-
-        // Audio with Canvas Visualizer
+        // ─── Audio ───
         if (item.hasAttribute('data-audio')) {
-            this.shadowRoot.getElementById('content-container').classList.add('fullscreen-mode');
-            const audioSrc = item.getAttribute('data-audio');
-            this.createAudioVisualizer(audioSrc, item.hasAttribute('data-autoplay'));
+            this.createAudioModal(item.getAttribute('data-audio'), item.hasAttribute('data-autoplay'));
         }
-
-        // Video with Canvas Player
+        // ─── Video ───
         else if (item.hasAttribute('data-video')) {
-            this.shadowRoot.getElementById('content-container').classList.add('fullscreen-mode');
-            const videoSrc = item.getAttribute('data-video');
-            this.createVideoPlayer(videoSrc, item.hasAttribute('data-autoplay'));
+            this.createVideoModal(item.getAttribute('data-video'), item.hasAttribute('data-autoplay'));
         }
-
-        // Image Viewer
+        // ─── Image ───
         else if (item.hasAttribute('data-image')) {
-            this.shadowRoot.getElementById('content-container').classList.add('fullscreen-mode');
-            const imgSrc = item.getAttribute('data-image');
-            this.createImageViewer(imgSrc);
+            this.createImageModal(item.getAttribute('data-image'));
         }
-
-        // Email Form
+        // ─── Email ───
         else if (item.hasAttribute('data-email')) {
-            const emailTo = item.getAttribute('data-email');
-            const form = document.createElement('form');
-            form.innerHTML = `
-                <label>To:</label>
-                <input type="email" name="to" value="${emailTo}" readonly>
-                
-                <label>Subject:</label>
-                <input type="text" name="subject" placeholder="Enter subject" required>
-                
-                <label>Message:</label>
-                <textarea name="message" rows="6" placeholder="Enter your message" required></textarea>
-                
-                <button type="submit">Send Email</button>
-            `;
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const formData = new FormData(form);
-                const subject = formData.get('subject');
-                const message = formData.get('message');
-                window.location.href = `mailto:${emailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
-                this.hideContent();
-            });
-            this.els.contentBody.appendChild(form);
+            this.createEmailModal(item.getAttribute('data-email'));
         }
-
-        // Phone Dialer
+        // ─── Phone ───
         else if (item.hasAttribute('data-phone')) {
-            const phoneNumber = item.getAttribute('data-phone');
-            const phoneDiv = document.createElement('div');
-            phoneDiv.innerHTML = `
-                <p style="font-size: 24px; margin: 20px 0; text-align: center;">
-                    <a href="tel:${phoneNumber}" style="color: var(--primary); text-decoration: none; font-weight: bold;">
-                        📞 ${phoneNumber}
-                    </a>
-                </p>
-                <p style="text-align: center; color: #aaa;">
-                    Click the number to call
-                </p>
-            `;
-            this.els.contentBody.appendChild(phoneDiv);
+            this.createPhoneModal(item.getAttribute('data-phone'));
         }
-
-        // Map
+        // ─── Map ───
         else if (item.hasAttribute('data-map')) {
-            const address = item.getAttribute('data-map');
-
-            // Create map container
-            const mapContainer = document.createElement('div');
-            mapContainer.id = 'osm-map-' + Date.now();
-            mapContainer.style.width = '100%';
-            mapContainer.style.height = '500px';
-            mapContainer.style.borderRadius = '8px';
-            mapContainer.style.overflow = 'hidden';
-            this.els.contentBody.appendChild(mapContainer);
-
-            // Load Leaflet CSS and JS if not already loaded
-            if (!document.getElementById('leaflet-css')) {
-                const link = document.createElement('link');
-                link.id = 'leaflet-css';
-                link.rel = 'stylesheet';
-                link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-                document.head.appendChild(link);
-            }
-
-            if (!window.L) {
-                const script = document.createElement('script');
-                script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-                script.onload = () => this.initializeMap(mapContainer, address);
-                document.head.appendChild(script);
-            } else {
-                this.initializeMap(mapContainer, address);
-            }
+            this.createMapModal(item.getAttribute('data-map'));
         }
-
-        // Generic iframe
+        // ─── Iframe ───
         else if (item.hasAttribute('data-iframe')) {
             const iframeSrc = item.getAttribute('data-iframe');
             const iframe = document.createElement('iframe');
@@ -1246,7 +1266,7 @@ class BzrDialMenu extends HTMLElement {
             this.els.contentBody.appendChild(iframe);
         }
 
-        // Show overlay
+        // Show modal
         this.els.contentOverlay.classList.add('active');
     }
 
@@ -1393,94 +1413,70 @@ class BzrDialMenu extends HTMLElement {
         container.addEventListener('click', showControls);
     }
 
-    createAudioVisualizer(audioSrc, autoplay = false) {
-        // Create full screen canvas
+    // ═══ Audio Modal ═══
+    createAudioModal(audioSrc, autoplay = false) {
+        const wrap = document.createElement('div');
+        wrap.className = 'modal-media-wrap';
+
+        const canvasEl = document.createElement('div');
+        canvasEl.className = 'modal-media-canvas';
         const canvas = document.createElement('canvas');
-        canvas.style.position = 'absolute';
-        canvas.style.top = '0';
-        canvas.style.left = '0';
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
+        canvasEl.appendChild(canvas);
+        wrap.appendChild(canvasEl);
 
-        const resize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        };
-        window.addEventListener('resize', resize);
-        this._resizeHandlers.push(resize);
-        resize();
-
-        this.els.contentBody.appendChild(canvas);
+        this.els.contentBody.appendChild(wrap);
         const ctx = canvas.getContext('2d');
 
-        // Audio Element
         const audio = document.createElement('audio');
         audio.src = audioSrc;
-        audio.style.display = 'none';
-        audio.crossOrigin = 'anonymous'; // Helper for some servers
+        audio.crossOrigin = 'anonymous';
         if (autoplay) audio.autoplay = true;
         this.els.contentBody.appendChild(audio);
 
-        // Custom Overlay Controls
-        this.createMediaControls(audio, this.els.contentBody);
+        this.createMediaControls(audio, wrap);
 
-        // Web Audio Initialization
-        // Must be resumed on user gesture. Since we are in a click handler context, this should work.
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         this.audioCtx = new AudioContext();
-
         const analyser = this.audioCtx.createAnalyser();
-        analyser.fftSize = 512;
-
+        analyser.fftSize = 256;
         const source = this.audioCtx.createMediaElementSource(audio);
         source.connect(analyser);
         analyser.connect(this.audioCtx.destination);
-
         const bufferLength = analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
 
         const draw = () => {
             if (!this.els.contentOverlay.classList.contains('active')) return;
             this._mediaRaf = requestAnimationFrame(draw);
-
             analyser.getByteFrequencyData(dataArray);
 
-            // Draw Background
-            ctx.fillStyle = '#111';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const w = canvas.width = canvasEl.clientWidth * 2;
+            const h = canvas.height = canvasEl.clientHeight * 2;
+            const cx = w / 2, cy = h / 2;
+            const radius = Math.min(cx, cy) * 0.35;
 
-            // Circular Visualizer
-            const cx = canvas.width / 2;
-            const cy = canvas.height / 2;
-            const radius = Math.min(cx, cy) * 0.4;
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, w, h);
 
             ctx.beginPath();
             ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(0, 255, 157, 0.5)';
+            ctx.strokeStyle = 'rgba(0, 255, 157, 0.3)';
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            // Bars
-            const barWidth = 4;
-            const count = 120; // Number of bars around circle
-            const step = (Math.PI * 2) / count;
-
-            for (let i = 0; i < count; i++) {
-                // Map i to index in frequency data (focus on lower/mids)
-                const dataIndex = Math.floor((i / count) * (bufferLength * 0.7));
-                const value = dataArray[dataIndex];
-                const percent = value / 255;
-                const height = percent * (Math.min(cx, cy) * 0.5);
-
+            const barCount = 80;
+            const step = (Math.PI * 2) / barCount;
+            for (let i = 0; i < barCount; i++) {
+                const dataIndex = Math.floor((i / barCount) * (bufferLength * 0.6));
+                const pct = dataArray[dataIndex] / 255;
+                const barH = pct * radius * 0.8;
                 const angle = i * step - Math.PI / 2;
-
                 const x1 = cx + Math.cos(angle) * radius;
                 const y1 = cy + Math.sin(angle) * radius;
-                const x2 = cx + Math.cos(angle) * (radius + height);
-                const y2 = cy + Math.sin(angle) * (radius + height);
-
-                ctx.strokeStyle = `hsl(${120 + percent * 60}, 100%, 50%)`; // Green to Cyan
-                ctx.lineWidth = barWidth;
+                const x2 = cx + Math.cos(angle) * (radius + barH);
+                const y2 = cy + Math.sin(angle) * (radius + barH);
+                ctx.strokeStyle = `hsl(${140 + pct * 40}, 100%, ${40 + pct * 30}%)`;
+                ctx.lineWidth = 3;
                 ctx.beginPath();
                 ctx.moveTo(x1, y1);
                 ctx.lineTo(x2, y2);
@@ -1488,110 +1484,162 @@ class BzrDialMenu extends HTMLElement {
             }
         };
 
-        // Ensure context is running (browser policy)
         audio.onplay = () => {
-            if (this.audioCtx.state === 'suspended') {
-                this.audioCtx.resume();
-            }
+            if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
             draw();
         };
-
-        if (autoplay) {
-            // Try to start immediately if trusted
-            // But usually wait for onplay
-        }
     }
 
-    createVideoPlayer(videoSrc, autoplay = false) {
+    // ═══ Video Modal ═══
+    createVideoModal(videoSrc, autoplay = false) {
+        const wrap = document.createElement('div');
+        wrap.className = 'modal-media-wrap';
+
+        const canvasEl = document.createElement('div');
+        canvasEl.className = 'modal-media-canvas';
         const canvas = document.createElement('canvas');
-        canvas.style.position = 'absolute';
-        canvas.style.top = '0';
-        canvas.style.left = '0';
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
+        canvasEl.appendChild(canvas);
+        wrap.appendChild(canvasEl);
 
-        const resize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        };
-        window.addEventListener('resize', resize);
-        this._resizeHandlers.push(resize);
-        resize();
-
-        this.els.contentBody.appendChild(canvas);
+        this.els.contentBody.appendChild(wrap);
         const ctx = canvas.getContext('2d');
 
         const video = document.createElement('video');
         video.src = videoSrc;
-        video.style.display = 'none'; // Draw via canvas only
         video.crossOrigin = 'anonymous';
+        video.playsInline = true;
         if (autoplay) video.autoplay = true;
         this.els.contentBody.appendChild(video);
 
-        this.createMediaControls(video, this.els.contentBody); // Use video element for timing/play control
+        this.createMediaControls(video, wrap);
 
         const render = () => {
             if (!this.els.contentOverlay.classList.contains('active')) return;
             this._mediaRaf = requestAnimationFrame(render);
-
             if (video.paused || video.ended) return;
 
-            // Draw Logic: Cover or Contain? User asked for Full Screen at any aspect ratio.
-            // Let's do 'Contain' (Letterboxing) so we don't crop content, but fill background black.
-
+            const w = canvas.width = canvasEl.clientWidth * 2;
+            const h = canvas.height = canvasEl.clientHeight * 2;
             ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, w, h);
 
-            const vw = video.videoWidth;
-            const vh = video.videoHeight;
-            const cw = canvas.width;
-            const ch = canvas.height;
-
-            if (vw === 0 || vh === 0) return;
-
-            const result = this.calculateAspectRatioFit(vw, vh, cw, ch);
-
-            ctx.drawImage(video, result.offsetX, result.offsetY, result.width, result.height);
+            const vw = video.videoWidth, vh = video.videoHeight;
+            if (vw && vh) {
+                const r = this.calculateAspectRatioFit(vw, vh, w, h);
+                ctx.drawImage(video, r.offsetX, r.offsetY, r.width, r.height);
+            }
         };
 
-        video.addEventListener('play', () => {
-            render();
+        video.addEventListener('play', () => render());
+        if (autoplay) render();
+    }
+
+    // ═══ Image Modal ═══
+    createImageModal(imgSrc) {
+        const wrap = document.createElement('div');
+        wrap.className = 'modal-image-wrap';
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.alt = 'Gallery image';
+        wrap.appendChild(img);
+        this.els.contentBody.appendChild(wrap);
+    }
+
+    // ═══ Email Modal ═══
+    createEmailModal(emailTo) {
+        const form = document.createElement('form');
+
+        const toGroup = document.createElement('div');
+        toGroup.innerHTML = '<label for="email-to">To</label>';
+        const toInput = document.createElement('input');
+        toInput.type = 'email'; toInput.id = 'email-to'; toInput.name = 'to';
+        toInput.value = emailTo; toInput.readOnly = true;
+        toGroup.appendChild(toInput);
+        form.appendChild(toGroup);
+
+        const subjGroup = document.createElement('div');
+        subjGroup.innerHTML = '<label for="email-subject">Subject</label>';
+        const subjInput = document.createElement('input');
+        subjInput.type = 'text'; subjInput.id = 'email-subject'; subjInput.name = 'subject';
+        subjInput.placeholder = 'Enter subject'; subjInput.required = true;
+        subjGroup.appendChild(subjInput);
+        form.appendChild(subjGroup);
+
+        const msgGroup = document.createElement('div');
+        msgGroup.innerHTML = '<label for="email-message">Message</label>';
+        const msgInput = document.createElement('textarea');
+        msgInput.id = 'email-message'; msgInput.name = 'message';
+        msgInput.placeholder = 'Enter your message'; msgInput.required = true;
+        msgGroup.appendChild(msgInput);
+        form.appendChild(msgGroup);
+
+        const actions = document.createElement('div');
+        actions.className = 'form-actions';
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button'; cancelBtn.className = 'btn btn-ghost';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.addEventListener('click', () => this.hideContent());
+        const sendBtn = document.createElement('button');
+        sendBtn.type = 'submit'; sendBtn.className = 'btn btn-primary';
+        sendBtn.textContent = 'Send Email';
+        actions.appendChild(cancelBtn);
+        actions.appendChild(sendBtn);
+        form.appendChild(actions);
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const fd = new FormData(form);
+            window.location.href = `mailto:${emailTo}?subject=${encodeURIComponent(fd.get('subject'))}&body=${encodeURIComponent(fd.get('message'))}`;
+            this.hideContent();
         });
 
-        // If autoplay works immediately
-        if (autoplay) {
-            render();
+        this.els.contentBody.appendChild(form);
+    }
+
+    // ═══ Phone Modal ═══
+    createPhoneModal(phoneNumber) {
+        const card = document.createElement('div');
+        card.className = 'modal-phone-card';
+        card.innerHTML = `
+            <div class="modal-phone-icon">📞</div>
+            <div class="modal-phone-number">${phoneNumber}</div>
+            <div class="modal-phone-hint">Tap to call this number</div>
+        `;
+        const callBtn = document.createElement('a');
+        callBtn.href = `tel:${phoneNumber}`;
+        callBtn.className = 'modal-phone-call-btn';
+        callBtn.innerHTML = '📱 Call Now';
+        card.appendChild(callBtn);
+        this.els.contentBody.appendChild(card);
+    }
+
+    // ═══ Map Modal ═══
+    createMapModal(address) {
+        const wrap = document.createElement('div');
+        wrap.className = 'modal-map-wrap';
+        const mapDiv = document.createElement('div');
+        mapDiv.id = 'osm-map-' + Date.now();
+        wrap.appendChild(mapDiv);
+        this.els.contentBody.appendChild(wrap);
+
+        if (!document.getElementById('leaflet-css')) {
+            const link = document.createElement('link');
+            link.id = 'leaflet-css'; link.rel = 'stylesheet';
+            link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+            document.head.appendChild(link);
+        }
+        if (!window.L) {
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+            script.onload = () => this.initializeMap(mapDiv, address);
+            document.head.appendChild(script);
+        } else {
+            this.initializeMap(mapDiv, address);
         }
     }
 
-    createImageViewer(imgSrc) {
-        const canvas = document.createElement('canvas');
-        canvas.style.position = 'absolute';
-        canvas.style.top = '0';
-        canvas.style.left = '0';
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
+    calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
 
-        const resize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        };
-        window.addEventListener('resize', resize);
-        this._resizeHandlers.push(resize);
-        resize();
-
-        this.els.contentBody.appendChild(canvas);
-        const ctx = canvas.getContext('2d');
-
-        const img = new Image();
-        img.src = imgSrc;
-        img.onload = () => {
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const result = this.calculateAspectRatioFit(img.naturalWidth, img.naturalHeight, canvas.width, canvas.height);
-            ctx.drawImage(img, result.offsetX, result.offsetY, result.width, result.height);
-        };
     }
 
     calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
