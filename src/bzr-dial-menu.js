@@ -187,6 +187,7 @@ class BzrDialMenu extends HTMLElement {
                 display: block; /* Removed flex */
                 backdrop-filter: blur(5px);
                 -webkit-backdrop-filter: blur(5px);
+                z-index: 9998;
             }
 
             /* When open: fullscreen overlay captures all input */
@@ -1231,6 +1232,7 @@ class BzrDialMenu extends HTMLElement {
 
     showContent(item) {
         const label = item.getAttribute('label') || 'Content';
+        console.log('[showContent] label=' + label);
         this.els.contentTitle.textContent = label;
         this.els.contentBody.innerHTML = '';
 
@@ -1266,12 +1268,15 @@ class BzrDialMenu extends HTMLElement {
             this.els.contentBody.appendChild(iframe);
         }
 
-        // Show modal
+        // Show modal — disable dial overlay pointer events so it doesn't steal touches
+        this.els.overlay.style.pointerEvents = 'none';
         this.els.contentOverlay.classList.add('active');
     }
 
     hideContent() {
         this.els.contentOverlay.classList.remove('active');
+        // Re-enable dial overlay pointer events
+        this.els.overlay.style.pointerEvents = '';
         // Stop current animation loop if any
         if (this._mediaRaf) {
             cancelAnimationFrame(this._mediaRaf);
