@@ -867,9 +867,9 @@ class BzrDialMenu extends HTMLElement {
             }
 
             if (!this.hasMoved && this.clickedIcon && !this.isSliding) {
-                // Handle Click - Check for inline content first, then href
+                // Handle Click on an icon
                 if (this.clickedIcon.hasAttribute('active')) {
-                    // Check for inline content types
+                    // Icon is already at the active slot (9 o'clock) — open its content
                     if (this.clickedIcon.hasAttribute('data-audio') ||
                         this.clickedIcon.hasAttribute('data-video') ||
                         this.clickedIcon.hasAttribute('data-image') ||
@@ -880,6 +880,48 @@ class BzrDialMenu extends HTMLElement {
                         this.showContent(this.clickedIcon);
                     } else if (this.clickedIcon.hasAttribute('href')) {
                         window.location.href = this.clickedIcon.getAttribute('href');
+                    }
+                } else {
+                    // Icon is NOT at the active slot — snap it to 9 o'clock
+                    // Find the index of the clicked icon
+                    const idx = this.items.indexOf(this.clickedIcon);
+                    if (idx !== -1) {
+                        // Calculate rotation needed to bring this item to the active slot
+                        const baseAngle = parseFloat(this.clickedIcon.dataset.baseAngle);
+                        const isRight = this.getAttribute('justify') !== 'left';
+                        const anchor = this.getAttribute('anchor') || (isRight ? 'right' : 'left');
+                        let activeSlotAngle;
+                        if (anchor === 'left')       activeSlotAngle = 0;
+                        else if (anchor === 'top')   activeSlotAngle = Math.PI / 2;
+                        else if (anchor === 'bottom') activeSlotAngle = -Math.PI / 2;
+                        else                         activeSlotAngle = Math.PI;
+
+                        // For left-justify, positionItems mirrors: angle = -angle
+                        // So we need: -(baseAngle + rotation) = activeSlotAngle (mod 2π)
+                        // rotation = -baseAngle - activeSlotAngle
+                        let targetRot;
+                        if (!isRight) {
+                            targetRot = -baseAngle - activeSlotAngle;
+                        } else {
+                            targetRot = activeSlotAngle - baseAngle;
+                        }
+                        // Normalize to nearest equivalent rotation (add multiples of snapAngle
+                        // to minimize the distance from current rotation)
+                        const currentSlot = Math.round(this.rotation / this.snapAngle);
+                        const targetSlot = Math.round(targetRot / this.snapAngle);
+                        // Pick the slot closest to current rotation
+                        let bestSlot = targetSlot;
+                        let bestDist = Math.abs((targetSlot * this.snapAngle) - this.rotation);
+                        for (let k = -2; k <= 2; k++) {
+                            const s = targetSlot + k;
+                            const dist = Math.abs((s * this.snapAngle) - this.rotation);
+                            if (dist < bestDist) {
+                                bestDist = dist;
+                                bestSlot = s;
+                            }
+                        }
+                        this.targetRotation = bestSlot * this.snapAngle;
+                        if (navigator.vibrate) navigator.vibrate(20);
                     }
                 }
             }
