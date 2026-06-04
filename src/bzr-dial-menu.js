@@ -985,8 +985,9 @@ class BzrDialMenu extends HTMLElement {
         // Full-dial: items evenly spaced across 360° (2*PI)
         this.snapAngle = (Math.PI * 2) / count;
 
-        // Start from the active slot angle so first item appears at the active position
-        const startAngle = activeSlotAngle - (Math.PI * 2) / (2 * count);
+        // Start from the active slot angle so item[0] appears at the active position
+        // when rotation=0. Subsequent items fan out counterclockwise.
+        const startAngle = activeSlotAngle;
 
         this.items.forEach((item, index) => {
             let angle = startAngle + (index * this.snapAngle);
@@ -1012,16 +1013,19 @@ class BzrDialMenu extends HTMLElement {
         // First pass: Calculate positions and find nearest to active slot
         this.items.forEach((item, index) => {
             const baseAngle = parseFloat(item.dataset.baseAngle);
+            // Apply rotation: positive rotation = counterclockwise
             let angle = baseAngle + this.rotation;
 
-            // Mirror for left-justify so items fan outward (rightward) from the left edge
+            // For left-justify, mirror the angle so items fan outward (rightward) from left edge
             if (!isRight) angle = -angle;
 
+            // Position the item using translate relative to the dial center
             const x = this.radius * Math.cos(angle);
             const y = this.radius * Math.sin(angle);
             item.style.transform = `translate(${x}px, ${y}px)`;
 
-            // Determine active proximity relative to the active slot
+            // Find which item is closest to the active slot
+            // Normalize angle to [0, 2π)
             let normalizedAngle = angle % (2 * Math.PI);
             if (normalizedAngle < 0) normalizedAngle += 2 * Math.PI;
 
