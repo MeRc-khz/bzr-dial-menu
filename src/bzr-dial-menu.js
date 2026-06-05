@@ -217,7 +217,7 @@ class BzrDialMenu extends HTMLElement {
                 cursor: pointer;
                 box-shadow: 0 4px 20px rgba(43,238,140,0.3);
                 transition: transform 0.2s, background 0.2s;
-                z-index: 2;
+                z-index: 10001;
                 font-weight: bold;
                 user-select: none;
                 pointer-events: auto;
