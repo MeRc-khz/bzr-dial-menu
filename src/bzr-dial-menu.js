@@ -16,7 +16,7 @@ class BzrDialMenu extends HTMLElement {
         // License validation
         this._licenseValid = this._validateLicense();
         if (!this._licenseValid && typeof console !== 'undefined') {
-            console.warn('bzr-dial-ui: No valid license key. Purchase at https://bzzrr.link');
+            console.warn('bzr-dial-ui v1.0.1-mvp: No valid license key. Purchase at https://bzzrr.link');
         }
 
         this.attachShadow({ mode: 'open' });
