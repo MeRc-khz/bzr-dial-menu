@@ -351,11 +351,13 @@ class BzrDialMenu extends HTMLElement {
                 opacity: 0;
                 transition: opacity 0.3s ease;
                 padding: 24px;
+                pointer-events: none;
             }
 
             #content-overlay.active {
                 display: flex;
                 opacity: 1;
+                pointer-events: auto;
             }
 
             #content-container {
@@ -370,6 +372,7 @@ class BzrDialMenu extends HTMLElement {
                 position: relative;
                 box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
                 overflow: hidden;
+                pointer-events: auto;
             }
 
             /* Modal Header */
@@ -794,6 +797,14 @@ class BzrDialMenu extends HTMLElement {
         this.els.contentClose.addEventListener('click', () => {
             this.hideContent();
             if (this.isOpen) this.toggle();
+        });
+
+        // Click on backdrop (outside modal card) closes content + dial
+        this.els.contentOverlay.addEventListener('click', (e) => {
+            if (e.target === this.els.contentOverlay) {
+                this.hideContent();
+                if (this.isOpen) this.toggle();
+            }
         });
 
 
